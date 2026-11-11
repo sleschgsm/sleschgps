@@ -191,8 +191,9 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
     <div id="c-status" style="justify-self:center"></div>
     <dl id="c-dl"></dl>
     <div class="actions">
-      <button class="btn primary" id="c-card">Zapisz kartę (PNG)</button>
-      <button class="btn" id="c-qrpng">Zapisz sam QR</button>
+      <button class="btn primary" id="c-pdf">Drukuj kartę (PDF A6)</button>
+      <button class="btn" id="c-card">Obrazek (PNG)</button>
+      <button class="btn" id="c-qrpng">Sam QR</button>
     </div>
     <div class="actions">
       <button class="btn" id="c-edit">Edytuj</button>
@@ -1699,7 +1700,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
       ${r.opis ? `<dt>Zakres</dt><dd>${esc(r.opis)}</dd>` : ""}`;
     $("c-copy").onclick = () => { const p = navigator.clipboard?.writeText(r.telefon); if (p) p.then(() => setMsg("Skopiowano numer."), () => setMsg("Zaznacz numer i skopiuj ręcznie.")); else setMsg("Zaznacz numer i skopiuj ręcznie."); };
     disarm(); setMsg("");
-    $("c-card").hidden = $("c-qrpng").hidden = !(store && store.canSave);
+    $("c-pdf").hidden = $("c-card").hidden = $("c-qrpng").hidden = !(store && store.canSave);
     $("sheet").hidden = false;
   }
   const setMsg = t => { $("c-msg").textContent = t; };
@@ -1727,49 +1728,95 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     try { await store.del(current.kod); closeCard(); } catch { setMsg("Nie udało się usunąć."); }
   };
 
-  // ---------- PNG export ----------
-  async function savePNG(canvas, filename){
-    const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
+  // ---------- card export: PNG + PDF ----------
+  const REVIEW_URL = "https://share.google/BQ6bItwWcq6KqG4D5";
+  async function saveBlob(blob, filename){
     try { setMsg(await store.saveFile(filename, blob)); } catch { setMsg("Nie udało się zapisać pliku."); }
   }
-  $("c-qrpng").onclick = () => {
-    const r = current; if (!r) return;
-    const c = document.createElement("canvas"); c.width = c.height = 800;
-    drawQR(c.getContext("2d"), makeQR(qrText(r)), 0, 0, 800);
-    savePNG(c, `QR-${r.kod}.png`);
-  };
-  $("c-card").onclick = async () => {
-    const r = current; if (!r) return;
+  const canvasBlob = (c, type, q) => new Promise(res => c.toBlob(res, type, q));
+  function star(x, cx, cy, R){
+    x.beginPath();
+    for (let i = 0; i < 10; i++) { const a = -Math.PI/2 + i*Math.PI/5, rr = i%2 ? R*0.45 : R; x.lineTo(cx + rr*Math.cos(a), cy + rr*Math.sin(a)); }
+    x.closePath(); x.fill();
+  }
+  // A6 (105 × 148 mm) at 300 dpi
+  async function drawCard(r){
     try { await document.fonts.ready; } catch {}
-    const W = 1080, H = 1500, c = document.createElement("canvas"); c.width = W; c.height = H;
+    const W = 1240, H = 1748, M = 80, c = document.createElement("canvas"); c.width = W; c.height = H;
     const x = c.getContext("2d");
     x.fillStyle = "#ffffff"; x.fillRect(0,0,W,H);
-    x.fillStyle = "#0b6e7a"; x.fillRect(0,0,W,190);
+    x.fillStyle = "#0b6e7a"; x.fillRect(0,0,W,210);
     x.fillStyle = "#ffffff";
-    x.beginPath(); x.moveTo(110,48); x.lineTo(150,142); x.lineTo(110,121); x.lineTo(70,142); x.closePath(); x.fill();
-    x.font = "700 64px 'Barlow Semi Condensed', 'Arial Narrow', sans-serif"; x.fillText("SleschGPS", 180, 112);
-    x.font = "500 30px 'IBM Plex Sans', sans-serif"; x.fillText("Serwis nawigacji · Biłgoraj", 182, 154);
-    x.fillStyle = "#5a6878"; x.font = "600 26px 'IBM Plex Sans', sans-serif"; x.fillText("KARTA GWARANCYJNA", 70, 262);
-    x.fillStyle = "#c25e0c"; x.font = "600 58px 'IBM Plex Mono', monospace"; x.fillText(r.kod, 70, 330);
-    drawQR(x, makeQR(qrText(r)), (W-560)/2, 370, 560);
+    x.beginPath(); x.moveTo(125,52); x.lineTo(170,158); x.lineTo(125,134); x.lineTo(80,158); x.closePath(); x.fill();
+    x.font = "700 74px 'Barlow Semi Condensed', 'Arial Narrow', sans-serif"; x.fillText("SleschGPS", 200, 122);
+    x.font = "500 34px 'IBM Plex Sans', sans-serif"; x.fillText("Serwis nawigacji · Biłgoraj", 202, 170);
+    x.fillStyle = "#5a6878"; x.font = "600 30px 'IBM Plex Sans', sans-serif"; x.fillText("KARTA GWARANCYJNA", M, 290);
+    x.fillStyle = "#c25e0c"; x.font = "600 66px 'IBM Plex Mono', monospace"; x.fillText(r.kod, M, 368);
+    drawQR(x, makeQR(qrText(r)), (W-540)/2, 395, 540);
+    x.fillStyle = "#5a6878"; x.font = "400 26px 'IBM Plex Sans', sans-serif"; x.textAlign = "center";
+    x.fillText("Kod gwarancji — zeskanuj, aby sprawdzić dane naprawy", W/2, 972); x.textAlign = "left";
     const end = warrantyEnd(r);
     const rows = [
       ["Klient", r.klient], ["Urządzenie", r.urzadzenie || "—"], ["Nr seryjny", r.nrSeryjny],
       ["Data naprawy", fmtDate(r.dataNaprawy)], ["Gwarancja", `${r.gwarancjaMies} mies. — do ${fmtDate(end)}`], ["Kwota", zl(r.kwota)]
     ];
-    let y = 1010;
+    let y = 1062;
     x.strokeStyle = "#d5dbe2"; x.lineWidth = 2;
     rows.forEach(([k,v]) => {
-      x.beginPath(); x.moveTo(70, y-46); x.lineTo(W-70, y-46); x.stroke();
-      x.fillStyle = "#5a6878"; x.font = "500 30px 'IBM Plex Sans', sans-serif"; x.fillText(k, 70, y);
-      x.fillStyle = "#16202b"; x.font = "600 32px 'IBM Plex Sans', sans-serif";
-      let t = String(v); while (x.measureText(t).width > 640 && t.length > 4) t = t.slice(0,-2) + "…";
-      x.textAlign = "right"; x.fillText(t, W-70, y); x.textAlign = "left";
-      y += 70;
+      x.beginPath(); x.moveTo(M, y-44); x.lineTo(W-M, y-44); x.stroke();
+      x.fillStyle = "#5a6878"; x.font = "500 32px 'IBM Plex Sans', sans-serif"; x.fillText(k, M, y);
+      x.fillStyle = "#16202b"; x.font = "600 34px 'IBM Plex Sans', sans-serif";
+      let t = String(v); while (x.measureText(t).width > 760 && t.length > 4) t = t.slice(0,-2) + "…";
+      x.textAlign = "right"; x.fillText(t, W-M, y); x.textAlign = "left";
+      y += 64;
     });
-    x.fillStyle = "#5a6878"; x.font = "400 24px 'IBM Plex Sans', sans-serif";
-    x.fillText("Zeskanuj kod QR, aby sprawdzić dane gwarancji. Zachowaj tę kartę.", 70, H-50);
-    savePNG(c, `Gwarancja-${r.kod}.png`);
+    // review band
+    const top = 1440;
+    x.fillStyle = "#e8f3f4"; x.fillRect(0, top, W, H-top);
+    drawQR(x, makeQR(REVIEW_URL), M, top+30, 248);
+    const tx = M + 248 + 44;
+    x.fillStyle = "#0b6e7a"; x.font = "700 52px 'Barlow Semi Condensed', 'Arial Narrow', sans-serif"; x.fillText("Oceń nasz serwis", tx, top+92);
+    x.fillStyle = "#e0a100"; for (let i = 0; i < 5; i++) star(x, tx + 22 + i*52, top+136, 22);
+    x.fillStyle = "#16202b"; x.font = "500 30px 'IBM Plex Sans', sans-serif"; x.fillText("Zeskanuj kod i wystaw opinię w Google.", tx, top+208);
+    x.fillStyle = "#5a6878"; x.font = "400 28px 'IBM Plex Sans', sans-serif"; x.fillText("Dziękujemy za zaufanie!", tx, top+252);
+    return c;
+  }
+  // A4 page with the A6 card at true size in the top-left corner and a thin cut line
+  function makePDF(jpeg, pxW, pxH){
+    const mm = v => v * 72 / 25.4, pw = 595.28, ph = 841.89;
+    const cw = mm(105), ch = mm(148), cx = mm(10), cy = ph - mm(10) - ch;
+    const f = n => n.toFixed(2);
+    const content = `q ${f(cw)} 0 0 ${f(ch)} ${f(cx)} ${f(cy)} cm /Im1 Do Q\n0.6 G 0.4 w [3 3] 0 d ${f(cx)} ${f(cy)} ${f(cw)} ${f(ch)} re S\n`;
+    const enc = s => new TextEncoder().encode(s);
+    const parts = [], offs = []; let len = 0;
+    const push = p => { const u = typeof p === "string" ? enc(p) : p; parts.push(u); len += u.length; };
+    push("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n".replace(/[\xE2\xE3\xCF\xD3]/g, "x"));
+    const obj = (n, body) => { offs[n] = len; push(`${n} 0 obj\n`); body.forEach(push); push("\nendobj\n"); };
+    obj(1, ["<< /Type /Catalog /Pages 2 0 R >>"]);
+    obj(2, ["<< /Type /Pages /Kids [3 0 R] /Count 1 >>"]);
+    obj(3, [`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pw} ${ph}] /Resources << /XObject << /Im1 4 0 R >> >> /Contents 5 0 R >>`]);
+    obj(4, [`<< /Type /XObject /Subtype /Image /Width ${pxW} /Height ${pxH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`, jpeg, "\nendstream"]);
+    obj(5, [`<< /Length ${enc(content).length} >>\nstream\n${content}endstream`]);
+    const xref = len;
+    push(`xref\n0 6\n0000000000 65535 f \n` + [1,2,3,4,5].map(n => String(offs[n]).padStart(10,"0") + " 00000 n \n").join(""));
+    push(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
+    return new Blob(parts, { type: "application/pdf" });
+  }
+  $("c-pdf").onclick = async () => {
+    const r = current; if (!r) return;
+    const c = await drawCard(r);
+    const jpeg = new Uint8Array(await (await canvasBlob(c, "image/jpeg", 0.95)).arrayBuffer());
+    saveBlob(makePDF(jpeg, c.width, c.height), `Gwarancja-${r.kod}.pdf`);
+  };
+  $("c-card").onclick = async () => {
+    const r = current; if (!r) return;
+    saveBlob(await canvasBlob(await drawCard(r), "image/png"), `Gwarancja-${r.kod}.png`);
+  };
+  $("c-qrpng").onclick = async () => {
+    const r = current; if (!r) return;
+    const c = document.createElement("canvas"); c.width = c.height = 800;
+    drawQR(c.getContext("2d"), makeQR(qrText(r)), 0, 0, 800);
+    saveBlob(await canvasBlob(c, "image/png"), `QR-${r.kod}.png`);
   };
 
   // ---------- serial number scanner ----------
