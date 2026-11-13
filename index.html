@@ -6,6 +6,11 @@
 <meta name="theme-color" content="#0b6e7a">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="SleschGPS">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<script>if ("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {});</script>
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
@@ -45,8 +50,13 @@ h1{font-family:var(--f-display);font-weight:700;font-size:26px;letter-spacing:.0
 .sub{color:var(--muted);font-size:13px;margin-top:3px}
 .count{font-family:var(--f-mono);font-size:12px;color:var(--muted)}
 
+.navrow{display:flex;gap:8px;align-items:stretch}
+.navrow .seg{flex:1;min-width:0}
+.gear{flex:none;width:50px;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);border-radius:10px;cursor:pointer;display:grid;place-items:center}
+.gear svg{width:24px;height:24px}
+.gear[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
 .seg{display:grid;grid-template-columns:1fr 1fr;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px}
-.seg button{font:600 14px var(--f-body);border:0;background:transparent;color:var(--muted);padding:10px;border-radius:7px;cursor:pointer}
+.seg button{font:600 14px var(--f-body);border:0;background:transparent;color:var(--muted);padding:10px 4px;white-space:nowrap;border-radius:7px;cursor:pointer}
 .seg button[aria-selected="true"]{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px #0002}
 
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:grid;gap:16px}
@@ -72,6 +82,33 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid v
 .scanhint{grid-area:1/1;align-self:start;justify-self:center;margin-top:calc(24px + env(safe-area-inset-top,0px));color:#fff;font-weight:600;background:#0009;padding:6px 14px;border-radius:99px;font-size:14px}
 .scanbar{display:flex;gap:10px;justify-content:center;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#000}
 .scanbar .btn{background:#1e2833;color:#fff;border-color:#2c3946}
+.phoneacts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;font-family:var(--f-body)}
+.act{display:inline-flex;align-items:center;gap:6px;font:600 13px var(--f-body);padding:6px 11px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--fg);text-decoration:none;cursor:pointer}
+.act svg{width:16px;height:16px;flex:none}
+.act.sms{border-color:var(--accent);color:var(--accent)}
+.act.wa{border-color:#1f9e55;color:#1f9e55}
+.act:hover{background:var(--surface-2)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{font:500 13px var(--f-mono);padding:5px 10px;border-radius:99px;border:1px dashed var(--accent);background:transparent;color:var(--accent);cursor:pointer}
+.chip span{font-family:var(--f-body);color:var(--muted);font-weight:400;margin-left:4px}
+.bubble{background:var(--surface-2);border:1px solid var(--line);border-radius:14px 14px 14px 4px;padding:12px 14px;white-space:pre-wrap;overflow-wrap:anywhere;max-width:46ch;font-size:15px}
+.hint{font-size:13px;color:var(--muted);margin:0}
+#s-tpl{min-height:140px;font-size:15px}
+.stack{display:grid;gap:18px}
+.banner{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:12px 14px;border-radius:10px;background:var(--bad-bg);color:var(--fg);border:1px solid var(--bad)}
+.banner span{min-width:0;flex:1 1 220px;font-size:14px}
+.status{display:flex;align-items:center;gap:8px;font-size:14px;padding:10px 12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line)}
+.status .dot{width:10px;height:10px;border-radius:50%;flex:none;background:var(--muted)}
+.status.on .dot{background:var(--ok)}
+.status.warn .dot{background:var(--signal)}
+.status.err .dot{background:var(--bad)}
+.lockdlg{max-width:420px}
+.lockdlg .err{color:var(--bad);font-size:14px;min-height:1.2em}
+.guide ol{margin:0;padding-left:22px;display:grid;gap:10px}
+.guide li{padding-left:4px}
+.guide b{font-weight:600}
+.guide .note{font-size:13px;color:var(--muted);background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.codeblock{margin:0;font:500 12px/1.5 var(--f-mono);background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:12px;max-height:200px;overflow:auto;white-space:pre;color:var(--fg)}
 .money{position:relative}
 .money input{padding-right:40px}
 .money span{position:absolute;right:12px;bottom:11px;color:var(--muted);font-size:14px;text-transform:none;letter-spacing:0}
@@ -131,10 +168,15 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
     <div class="count" id="count"></div>
   </header>
 
-  <div class="seg" role="tablist">
-    <button id="tab-new" role="tab" aria-selected="true">Nowa naprawa</button>
-    <button id="tab-list" role="tab" aria-selected="false">Rejestr napraw</button>
+  <div class="navrow">
+    <div class="seg" role="tablist">
+      <button id="tab-new" role="tab" aria-selected="true">Nowa naprawa</button>
+      <button id="tab-list" role="tab" aria-selected="false">Rejestr napraw</button>
+    </div>
+    <button class="gear" id="tab-set" type="button" aria-pressed="false" aria-label="Ustawienia" title="Ustawienia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
   </div>
+
+  <div class="banner" id="cloud-banner" hidden><span id="cloud-banner-t"></span><button class="btn small primary" id="banner-get" type="button">Pobierz z chmury</button></div>
 
   <form class="panel" id="form" autocomplete="off">
     <h2 id="form-title">Nowa naprawa</h2>
@@ -162,6 +204,7 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
       <div class="actions">
         <button class="btn small" id="export" type="button">Eksportuj do Excela</button>
         <button class="btn small" id="import" type="button">Wczytaj z pliku</button>
+        <button class="btn small" id="reg-get" type="button" hidden>Pobierz z chmury</button>
         <input id="import-file" type="file" accept=".csv,text/csv" hidden>
       </div>
     </div>
@@ -169,6 +212,53 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
     <div class="msg" id="list-msg"></div>
     <div class="list" id="list"></div>
   </section>
+  <div class="stack" id="settings" hidden>
+  <section class="panel">
+    <h2>Wiadomość „naprawa gotowa”</h2>
+    <p class="hint">Ten tekst wyślesz przyciskiem SMS lub WhatsApp na karcie naprawy. Słowa w nawiasach klamrowych program sam zamieni na dane klienta. Stuknij, żeby wstawić:</p>
+    <div class="chips" id="s-chips"></div>
+    <label>Treść wiadomości<textarea id="s-tpl"></textarea></label>
+    <div style="display:grid;gap:6px">
+      <div class="eyebrow">Podgląd (przykładowa naprawa)</div>
+      <div class="bubble" id="s-prev"></div>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="s-save" type="button">Zapisz treść</button>
+      <button class="btn" id="s-reset" type="button">Przywróć domyślną</button>
+      <span class="msg" id="s-msg"></span>
+    </div>
+  </section>
+  <section class="panel">
+    <h2>Kod zabezpieczający</h2>
+    <p class="hint">Kod chroni zapisane naprawy przed przypadkową zmianą. Po jego ustawieniu edycja, usuwanie i wczytywanie z pliku wymagają podania kodu. Gdy zapomnisz kodu, użyj hasła awaryjnego.</p>
+    <div class="status" id="pin-status"><span class="dot"></span><span id="pin-status-t"></span></div>
+    <div class="grid" id="pin-form" hidden>
+      <label>Nowy kod<input id="pin-new" type="password" autocomplete="new-password" inputmode="text"></label>
+      <label>Powtórz kod<input id="pin-new2" type="password" autocomplete="new-password" inputmode="text"></label>
+    </div>
+    <div class="actions">
+      <button class="btn primary" id="pin-set" type="button">Ustaw kod</button>
+      <button class="btn" id="pin-change" type="button" hidden>Zmień kod</button>
+      <button class="btn" id="pin-off" type="button" hidden>Wyłącz kod</button>
+      <button class="btn" id="pin-cancel" type="button" hidden>Anuluj</button>
+      <span class="msg" id="pin-msg"></span>
+    </div>
+  </section>
+  <section class="panel">
+    <h2>Kopia w chmurze (Dysk Google)</h2>
+    <p class="hint">Po połączeniu program sam zapisuje cały rejestr na Twoim Dysku Google po każdej zmianie: dodaniu, edycji i usunięciu naprawy. Na innym komputerze lub telefonie wklej ten sam adres i stuknij <b>Pobierz z chmury</b>.</p>
+    <div class="status" id="cloud-status"><span class="dot"></span><span id="cloud-status-t"></span></div>
+    <label>Adres aplikacji internetowej Google<input id="cloud-url" type="url" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off"></label>
+    <div class="actions">
+      <button class="btn primary" id="cloud-connect" type="button">Połącz i wyślij kopię</button>
+      <button class="btn" id="cloud-guide" type="button">Instrukcja konfiguracji</button>
+      <button class="btn" id="cloud-get" type="button" hidden>Pobierz z chmury</button>
+      <button class="btn" id="cloud-now" type="button" hidden>Wyślij kopię teraz</button>
+      <button class="btn danger" id="cloud-off" type="button" hidden>Odłącz</button>
+    </div>
+    <span class="msg" id="cloud-msg"></span>
+  </section>
+  </div>
 </div>
 
 <div class="scanner" id="scanner" hidden>
@@ -178,6 +268,49 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
   <div class="scanbar">
     <button class="btn" id="scan-torch" type="button" hidden>Latarka</button>
     <button class="btn" id="scan-cancel" type="button">Anuluj</button>
+  </div>
+</div>
+
+<div class="sheet" id="lock" hidden style="z-index:40">
+  <form class="card lockdlg" id="lock-form" role="dialog" aria-modal="true" aria-labelledby="lock-title" autocomplete="off">
+    <div class="card-top">
+      <div><div class="eyebrow">Wymagany kod</div><h2 id="lock-title" style="margin:2px 0 0;font-family:var(--f-display);font-size:22px"></h2></div>
+      <button class="x" id="lock-close" type="button" aria-label="Zamknij">×</button>
+    </div>
+    <p class="hint" id="lock-note" hidden></p>
+    <label>Kod zabezpieczający lub hasło awaryjne<input id="lock-pin" type="password" autocomplete="off"></label>
+    <div class="err" id="lock-err"></div>
+    <div class="actions">
+      <button class="btn primary" id="lock-ok" type="submit">Potwierdź</button>
+      <button class="btn" id="lock-cancel" type="button">Anuluj</button>
+    </div>
+  </form>
+</div>
+
+<div class="sheet" id="guide" hidden style="z-index:35">
+  <div class="card guide" role="dialog" aria-modal="true" aria-labelledby="guide-title" style="max-width:640px">
+    <div class="card-top">
+      <div><div class="eyebrow">Kopia w chmurze</div><h2 id="guide-title" style="margin:2px 0 0;font-family:var(--f-display);font-size:22px">Konfiguracja Dysku Google</h2></div>
+      <button class="x" id="guide-close" type="button" aria-label="Zamknij">×</button>
+    </div>
+    <p class="note">Robisz to raz, zajmuje około 5 minut. Najwygodniej na komputerze: otwórz tam ten sam adres aplikacji, wejdź w ⚙ → <b>Instrukcja konfiguracji</b> i skopiuj skrypt. Gotowy adres z kroku 7 wyślij sobie na telefon, np. Messengerem.</p>
+    <ol>
+      <li>Wejdź na <b>script.google.com</b> i zaloguj się kontem Google, na którego Dysku mają być kopie.</li>
+      <li>Kliknij <b>Nowy projekt</b>. U góry kliknij „Projekt bez tytułu” i nazwij go <b>SleschGPS kopia</b>.</li>
+      <li>Usuń cały tekst w edytorze i wklej skrypt (przycisk poniżej). Kliknij ikonę dyskietki <b>Zapisz</b>.</li>
+      <li>Kliknij niebieski przycisk <b>Wdróż</b> → <b>Nowe wdrożenie</b>. Przy „Wybierz typ” kliknij koło zębate → <b>Aplikacja internetowa</b>.</li>
+      <li>Ustaw: <b>Wykonaj jako: Ja</b> oraz <b>Kto ma dostęp: Każdy</b>. Kliknij <b>Wdróż</b>.</li>
+      <li>Kliknij <b>Autoryzuj dostęp</b> i wybierz swoje konto. Google pokaże ostrzeżenie „Aplikacja nie została zweryfikowana” — to normalne, bo to Twój własny skrypt. Kliknij <b>Zaawansowane</b> → <b>Otwórz SleschGPS kopia (niebezpieczne)</b> → <b>Zezwól</b>.</li>
+      <li>Skopiuj <b>Adres URL aplikacji internetowej</b> (kończy się na <b>/exec</b>).</li>
+      <li>W aplikacji SleschGPS wklej ten adres w ⚙ → <b>Kopia w chmurze</b> i stuknij <b>Połącz i wyślij kopię</b>. Gdy pojawi się zielona kropka, gotowe.</li>
+    </ol>
+    <div style="display:grid;gap:8px">
+      <div class="actions" style="justify-content:space-between"><div class="eyebrow">Skrypt do wklejenia</div><button class="btn small primary" id="guide-copy" type="button">Kopiuj skrypt</button></div>
+      <pre class="codeblock" id="guide-code"></pre>
+      <span class="msg" id="guide-msg"></span>
+    </div>
+    <p class="note"><b>Drugi komputer lub telefon:</b> otwórz adres aplikacji, wejdź w ⚙ → Kopia w chmurze, wklej ten sam adres /exec i stuknij <b>Pobierz z chmury</b>. Program zapyta o kod zabezpieczający (lub hasło awaryjne) i wczyta najnowszą kopię. Pracuj zawsze na jednym urządzeniu naraz — gdy na Dysku jest nowsza kopia z innego urządzenia, program pokaże czerwony pasek i wstrzyma wysyłanie, dopóki jej nie pobierzesz.<br><br><b>Masz już wdrożoną starszą wersję skryptu?</b> Podmień w edytorze cały tekst na nowy skrypt, zapisz, potem <b>Wdróż → Zarządzaj wdrożeniami</b> → ikona ołówka → Wersja: <b>Nowa wersja</b> → <b>Wdróż</b>. Adres /exec się nie zmienia.</p>
+    <p class="note"><b>Gdzie są kopie?</b> Na Dysku Google w folderze <b>SleschGPS kopie zapasowe</b>. Plik <b>SleschGPS-rejestr-AKTUALNY.csv</b> to zawsze najnowszy stan, a pliki z datą to kopie z każdego dnia (ostatnie 60 dni).<br><br><b>Odtwarzanie:</b> pobierz plik z Dysku na telefon, potem Rejestr napraw → <b>Wczytaj z pliku</b>.</p>
   </div>
 </div>
 
@@ -1529,6 +1662,8 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
       exists: async kod => (await col.doc(kod).get()).exists,
       put: rec => col.doc(rec.kod).set(rec),
       del: kod => col.doc(kod).delete(),
+      async getSetting(k){ try { const d = await db.collection("ustawienia").doc(k).get(); return d.exists ? d.data().value : null; } catch { return null; } },
+      setSetting: (k, v) => db.collection("ustawienia").doc(k).set({ value: v }),
       async saveFile(name, blob){
         try { await dl.save({ filename: name, data: blob }); return "Zapisano plik."; }
         catch (e) { if (e && e.code === "declined") return ""; throw e; }
@@ -1552,6 +1687,8 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
       exists: async kod => !!read()[kod],
       put: async rec => { const m = read(); m[rec.kod] = rec; write(m); },
       del: async kod => { const m = read(); delete m[kod]; write(m); },
+      getSetting: async k => ls.getItem("sleschgps-ust-" + k),
+      setSetting: async (k, v) => ls.setItem("sleschgps-ust-" + k, v),
       async saveFile(name, blob){
         const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
         document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000);
@@ -1567,7 +1704,10 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     $("tab-list").setAttribute("aria-selected", tab === "list");
     $("form").hidden = tab !== "new";
     $("register").hidden = tab !== "list";
+    $("tab-set").setAttribute("aria-pressed", tab === "set");
+    $("settings").hidden = tab !== "set";
   }
+  $("tab-set").onclick = () => { if (!$("settings").hidden) { show("list"); return; } show("set"); renderPreview(); };
   $("tab-new").onclick = () => show("new");
   $("tab-list").onclick = () => show("list");
 
@@ -1634,12 +1774,12 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
 
   // ---------- CSV export / import ----------
   const csvCell = v => { const s = String(v ?? ""); return /[;"\n\r]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s; };
+  const buildCSV = recs => "\ufeff" + [FIELDS.map(f => f[1]).join(";")].concat(recs.map(r => FIELDS.map(([k]) =>
+      csvCell(k === "gwarancjaDo" ? warrantyEnd(r) : k === "kwota" ? String(r.kwota).replace(".", ",") : r[k])).join(";"))).join("\r\n");
   $("export").onclick = async () => {
     const bm = $("backup-msg");
     if (!records.length) { bm.textContent = "Rejestr jest pusty — nie ma czego eksportować."; return; }
-    const rows = [FIELDS.map(f => f[1]).join(";")].concat(records.map(r => FIELDS.map(([k]) =>
-      csvCell(k === "gwarancjaDo" ? warrantyEnd(r) : k === "kwota" ? String(r.kwota).replace(".", ",") : r[k])).join(";")));
-    const blob = new Blob(["﻿" + rows.join("\r\n")], { type: "text/csv" });
+    const blob = new Blob([buildCSV(records)], { type: "text/csv" });
     try { const m = await store.saveFile(`SleschGPS-rejestr-${todayISO()}.csv`, blob); if (m) bm.textContent = `Zapisano ${records.length} ${pluralAcc(records.length)} do pliku.`; }
     catch { bm.textContent = "Nie udało się zapisać pliku."; }
   };
@@ -1659,27 +1799,280 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     return rows.filter(r => r.some(x => x.trim()));
   }
   const toISO = s => { s = String(s||"").trim(); let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); if (m) return m[0]; m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/); return m ? `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}` : ""; };
-  $("import").onclick = () => $("import-file").click();
+  $("import").onclick = () => guard("Wczytać naprawy z pliku?", () => $("import-file").click());
+  function parseRecords(text){
+    const rows = parseCSV(text); const head = rows.shift() || [];
+    const idx = Object.fromEntries(FIELDS.map(([k, label]) => [k, head.findIndex(h => h.trim() === label)]));
+    if (idx.kod < 0 || idx.klient < 0) return null;
+    const out = [];
+    for (const r of rows) {
+      const g = k => idx[k] >= 0 ? (r[idx[k]] || "").trim() : "";
+      if (!g("kod")) continue;
+      out.push({ kod: g("kod"), klient: g("klient"), telefon: g("telefon"), urzadzenie: g("urzadzenie"),
+        nrSeryjny: g("nrSeryjny").toUpperCase(), dataNaprawy: toISO(g("dataNaprawy")) || todayISO(),
+        gwarancjaMies: Number(g("gwarancjaMies")) || 3, kwota: parseKwota(g("kwota")) || 0,
+        opis: g("opis"), utworzono: g("utworzono") || new Date().toISOString() });
+    }
+    return out;
+  }
   $("import-file").onchange = async e => {
     const f = e.target.files[0]; e.target.value = ""; const bm = $("backup-msg");
     if (!f || !store) return;
     try {
-      const rows = parseCSV(await f.text()); const head = rows.shift() || [];
-      const idx = Object.fromEntries(FIELDS.map(([k, label]) => [k, head.findIndex(h => h.trim() === label)]));
-      if (idx.kod < 0 || idx.klient < 0) { bm.textContent = "To nie jest plik z eksportu SleschGPS Serwis."; return; }
-      let n = 0;
-      for (const r of rows) {
-        const g = k => idx[k] >= 0 ? (r[idx[k]] || "").trim() : "";
-        if (!g("kod")) continue;
-        await store.put({ kod: g("kod"), klient: g("klient"), telefon: g("telefon"), urzadzenie: g("urzadzenie"),
-          nrSeryjny: g("nrSeryjny").toUpperCase(), dataNaprawy: toISO(g("dataNaprawy")) || todayISO(),
-          gwarancjaMies: Number(g("gwarancjaMies")) || 3, kwota: parseKwota(g("kwota")) || 0,
-          opis: g("opis"), utworzono: g("utworzono") || new Date().toISOString() });
-        n++;
-      }
-      bm.textContent = `Wczytano ${n} ${pluralAcc(n)}.`;
+      const recs = parseRecords(await f.text());
+      if (!recs) { bm.textContent = "To nie jest plik z eksportu SleschGPS Serwis."; return; }
+      for (const r of recs) await store.put(r);
+      bm.textContent = `Wczytano ${recs.length} ${pluralAcc(recs.length)}.`;
     } catch { bm.textContent = "Nie udało się wczytać pliku."; }
   };
+
+  // ---------- client message ----------
+  const DEFAULT_TPL = "Dzień dobry! Urządzenie {urzadzenie} (nr seryjny {nr_seryjny}) jest już naprawione i gotowe do odbioru. Koszt naprawy: {kwota}. Gwarancja ważna do {gwarancja_do}, kod gwarancji: {kod}.\nPozdrawiam, SleschGPS Biłgoraj";
+  const VARS = [
+    ["imie", "imię", r => (r.klient || "").trim().split(/\s+/)[0] || ""],
+    ["klient", "imię i nazwisko", r => r.klient || ""],
+    ["urzadzenie", "urządzenie", r => r.urzadzenie || "nawigacja"],
+    ["nr_seryjny", "nr seryjny", r => r.nrSeryjny || ""],
+    ["kwota", "kwota", r => zl(r.kwota)],
+    ["data", "data naprawy", r => fmtDate(r.dataNaprawy)],
+    ["gwarancja_do", "koniec gwarancji", r => fmtDate(warrantyEnd(r))],
+    ["kod", "kod gwarancji", r => r.kod || ""]
+  ];
+  let msgTpl = DEFAULT_TPL;
+  const fold = k => k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/\s+/g, "_");
+  const fillMsg = r => msgTpl.replace(/\{([^{}]{1,30})\}/g, (m, k) => { const v = VARS.find(x => x[0] === fold(k)); return v ? v[2](r) : m; });
+  function phoneIntl(t){
+    let d = String(t || "").replace(/[^\d+]/g, "");
+    if (d.startsWith("+")) d = d.slice(1); else if (d.startsWith("00")) d = d.slice(2); else if (d.length === 9) d = "48" + d;
+    return d.replace(/\D/g, "");
+  }
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const smsHref = r => "sms:+" + phoneIntl(r.telefon) + (isIOS ? "&" : "?") + "body=" + encodeURIComponent(fillMsg(r));
+  const waHref = r => "https://wa.me/" + phoneIntl(r.telefon) + "?text=" + encodeURIComponent(fillMsg(r));
+
+  const SAMPLE = { kod: "SG-7K2M9QXA", klient: "Jan Kowalski", telefon: "600 123 456", urzadzenie: "TomTom GO 6250", nrSeryjny: "QE2193G01234", kwota: 250, dataNaprawy: todayISO(), gwarancjaMies: 3 };
+  function renderPreview(){
+    const saved = msgTpl; msgTpl = $("s-tpl").value; $("s-prev").textContent = fillMsg(SAMPLE) || "—"; msgTpl = saved;
+  }
+  $("s-chips").innerHTML = VARS.map(([k, label]) => `<button class="chip" type="button" data-k="${k}">{${k}}<span>${label}</span></button>`).join("");
+  $("s-chips").addEventListener("click", e => {
+    const b = e.target.closest(".chip"); if (!b) return;
+    const ta = $("s-tpl"), ins = "{" + b.dataset.k + "}", a = ta.selectionStart ?? ta.value.length, z = ta.selectionEnd ?? a;
+    ta.value = ta.value.slice(0, a) + ins + ta.value.slice(z); ta.focus(); ta.setSelectionRange(a + ins.length, a + ins.length);
+    renderPreview(); $("s-msg").textContent = "Niezapisane zmiany";
+  });
+  $("s-tpl").addEventListener("input", () => { renderPreview(); $("s-msg").textContent = "Niezapisane zmiany"; });
+  $("s-save").onclick = async () => {
+    const v = $("s-tpl").value.trim();
+    if (!v) { $("s-msg").textContent = "Wiadomość nie może być pusta."; return; }
+    if (!store) { $("s-msg").textContent = "Zapis jest niedostępny w tym widoku."; return; }
+    try { await store.setSetting("sms", v); msgTpl = v; $("s-msg").textContent = "Zapisano. Nowa treść będzie w każdej wiadomości."; }
+    catch { $("s-msg").textContent = "Nie udało się zapisać."; }
+  };
+  $("s-reset").onclick = () => { $("s-tpl").value = DEFAULT_TPL; renderPreview(); $("s-msg").textContent = "Przywrócono domyślną — stuknij „Zapisz treść”."; };
+  $("s-tpl").value = msgTpl; renderPreview();
+
+  // ---------- security code ----------
+  const EMERGENCY = "02d6994faa261cf4e9d48e6dc5a034055d980565ee26b766479f2c6a8c828709";
+  let pinHash = null, lockAction = null;
+  async function hash(t){
+    const data = new TextEncoder().encode("sleschgps|" + t);
+    if (crypto.subtle) return Array.from(new Uint8Array(await crypto.subtle.digest("SHA-256", data)), b => b.toString(16).padStart(2, "0")).join("");
+    let h = 2166136261; for (const b of data) { h ^= b; h = Math.imul(h, 16777619) >>> 0; } return "fnv" + h.toString(16);
+  }
+  async function checkCode(t){
+    const h = await hash(t);
+    if (pinHash && h === pinHash) return "pin";
+    if (crypto.subtle && h === EMERGENCY) return "emergency";
+    return null;
+  }
+  // handler(text) -> error message, or null when done (dialog closes)
+  function openLock({ title, note, okLabel, danger, handler }){
+    lockAction = handler;
+    $("lock-title").textContent = title; $("lock-ok").textContent = okLabel || "Potwierdź";
+    $("lock-ok").classList.toggle("danger", !!danger); $("lock-ok").classList.toggle("primary", !danger);
+    $("lock-note").hidden = !note; $("lock-note").textContent = note || "";
+    $("lock-pin").value = ""; $("lock-err").textContent = ""; $("lock-ok").disabled = false;
+    $("lock").hidden = false; setTimeout(() => $("lock-pin").focus(), 50);
+  }
+  function guard(title, action, okLabel){
+    if (!pinHash) { action(); return; }
+    openLock({ title, okLabel, danger: !!okLabel, handler: async t => {
+      const ok = await checkCode(t);
+      if (!ok) return "Nieprawidłowy kod. Spróbuj ponownie.";
+      setTimeout(() => { if (ok === "emergency") alertBar("Użyto hasła awaryjnego. Jeśli nie pamiętasz kodu, ustaw nowy w ⚙ → Kod zabezpieczający."); action(); }, 0);
+      return null;
+    }});
+  }
+  const closeLock = () => { $("lock").hidden = true; lockAction = null; };
+  $("lock-close").onclick = $("lock-cancel").onclick = closeLock;
+  $("lock").addEventListener("click", e => { if (e.target.id === "lock") closeLock(); });
+  $("lock-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!lockAction) return;
+    $("lock-ok").disabled = true; $("lock-err").textContent = "";
+    let err; try { err = await lockAction($("lock-pin").value.trim()); } catch { err = "Coś poszło nie tak. Spróbuj ponownie."; }
+    $("lock-ok").disabled = false;
+    if (err) { $("lock-err").textContent = err; $("lock-pin").select(); return; }
+    closeLock();
+  });
+  function alertBar(t){ const m = $("pin-msg"); m.textContent = t; const c = $("c-msg"); if (!$("sheet").hidden) c.textContent = t; else { $("form-msg").textContent = t; } }
+
+  let pinMode = "idle"; // idle | new
+  function renderPin(){
+    const on = !!pinHash;
+    $("pin-status").className = "status " + (on ? "on" : "warn");
+    $("pin-status-t").textContent = on ? "Kod jest ustawiony. Zmiany w zapisanych naprawach wymagają kodu." : "Kod nie jest ustawiony. Każdy może edytować i usuwać naprawy.";
+    const editingPin = pinMode === "new" || !on;
+    $("pin-form").hidden = !editingPin;
+    $("pin-set").hidden = !editingPin; $("pin-set").textContent = on ? "Zapisz nowy kod" : "Ustaw kod";
+    $("pin-change").hidden = editingPin; $("pin-off").hidden = editingPin;
+    $("pin-cancel").hidden = !(on && pinMode === "new");
+  }
+  $("pin-set").onclick = async () => {
+    const a = $("pin-new").value.trim(), b = $("pin-new2").value.trim(), m = $("pin-msg");
+    if (a.length < 4) { m.textContent = "Kod musi mieć co najmniej 4 znaki."; return; }
+    if (a !== b) { m.textContent = "Kody się różnią. Wpisz ten sam kod dwa razy."; return; }
+    try { const h = await hash(a); await store.setSetting("pin", h); pinHash = h; pinMode = "idle"; $("pin-new").value = $("pin-new2").value = ""; m.textContent = "Kod zapisany."; renderPin(); }
+    catch { m.textContent = "Nie udało się zapisać kodu."; }
+  };
+  $("pin-change").onclick = () => guard("Zmienić kod zabezpieczający?", () => { pinMode = "new"; $("pin-msg").textContent = ""; renderPin(); $("pin-new").focus(); });
+  $("pin-cancel").onclick = () => { pinMode = "idle"; $("pin-new").value = $("pin-new2").value = ""; $("pin-msg").textContent = ""; renderPin(); };
+  $("pin-off").onclick = () => guard("Wyłączyć kod zabezpieczający?", async () => {
+    try { await store.setSetting("pin", ""); pinHash = null; $("pin-msg").textContent = "Kod wyłączony."; renderPin(); } catch { $("pin-msg").textContent = "Nie udało się wyłączyć kodu."; }
+  });
+
+  // ---------- cloud backup (Google Drive via Apps Script) ----------
+  const GAS_SRC = "// SleschGPS Serwis – kopia zapasowa na Dysku Google (wersja 2)\n// Nic tu nie zmieniaj. Wklej całość, zapisz i wdróż jako aplikację internetową.\n\nconst FOLDER = \"SleschGPS kopie zapasowe\";\nconst CURRENT = \"SleschGPS-rejestr-AKTUALNY.csv\";\nconst KEEP_DAYS = 60; // ile dziennych kopii trzymać\nconst EMERGENCY = \"02d6994faa261cf4e9d48e6dc5a034055d980565ee26b766479f2c6a8c828709\";\n\n// Zapis kopii (wysyła aplikacja po każdej zmianie)\nfunction doPost(e) {\n  const lock = LockService.getScriptLock();\n  lock.waitLock(20000);\n  try {\n    const body = JSON.parse(e.postData.contents);\n    if (body.app !== \"SleschGPS\" || typeof body.csv !== \"string\") return reply_({ ok: false, error: \"bad_request\" });\n    const folder = folder_();\n    save_(folder, CURRENT, body.csv);\n    save_(folder, \"SleschGPS-rejestr-\" + String(body.day).replace(/[^0-9-]/g, \"\") + \".csv\", body.csv);\n    cleanup_(folder);\n    const now = Date.now();\n    PropertiesService.getScriptProperties().setProperties({\n      updated: String(now), count: String(Number(body.count) || 0), pin: String(body.pin || \"\")\n    });\n    return reply_({ ok: true, count: body.count, updated: now });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\n// Odczyt: ?action=info (data i liczba napraw) albo ?action=latest&h=… (cała kopia, wymaga kodu)\nfunction doGet(e) {\n  const p = (e && e.parameter) || {};\n  const props = PropertiesService.getScriptProperties();\n  const updated = Number(props.getProperty(\"updated\") || 0);\n  const count = Number(props.getProperty(\"count\") || 0);\n  if (p.action === \"info\") return reply_({ ok: true, app: \"SleschGPS\", updated: updated, count: count });\n  if (p.action === \"latest\") {\n    const pin = props.getProperty(\"pin\") || \"\";\n    const who = p.h && pin && p.h === pin ? \"pin\" : (p.h === EMERGENCY ? \"emergency\" : null);\n    if (!who) { Utilities.sleep(1500); return reply_({ ok: false, error: \"auth\" }); }\n    const it = folder_().getFilesByName(CURRENT);\n    const csv = it.hasNext() ? it.next().getBlob().getDataAsString(\"UTF-8\") : \"\";\n    return reply_({ ok: true, csv: csv, updated: updated, count: count, who: who });\n  }\n  return reply_({ ok: true, app: \"SleschGPS\" });\n}\n\nfunction folder_() {\n  const it = DriveApp.getFoldersByName(FOLDER);\n  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);\n}\n\nfunction save_(folder, name, text) {\n  const it = folder.getFilesByName(name);\n  if (it.hasNext()) it.next().setContent(text);\n  else folder.createFile(name, text, MimeType.CSV);\n}\n\nfunction cleanup_(folder) {\n  const daily = [];\n  const it = folder.getFiles();\n  while (it.hasNext()) {\n    const f = it.next();\n    if (/^SleschGPS-rejestr-\\d{4}-\\d{2}-\\d{2}\\.csv$/.test(f.getName())) daily.push(f);\n  }\n  daily.sort((a, b) => b.getName().localeCompare(a.getName()));\n  daily.slice(KEEP_DAYS).forEach(f => f.setTrashed(true));\n}\n\nfunction reply_(obj) {\n  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);\n}\n";
+  $("guide-code").textContent = GAS_SRC;
+  let suppressBackup = false;
+  let cloudUrl = "", cloudTimer = null, cloudBusy = false, cloudAgain = false;
+  const stamp = ms => { const d = new Date(ms); const p = n => String(n).padStart(2, "0"); return `${p(d.getDate())}.${p(d.getMonth()+1)}.${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+  function cloudState(kind, text){ $("cloud-status").className = "status " + kind; $("cloud-status-t").textContent = text; }
+  const getSeen = async () => Number(await store.getSetting("cloudSeen") || 0);
+  async function cloudInfo(){
+    try { const r = await fetch(cloudUrl + "?action=info"); const j = await r.json(); return j && j.ok && typeof j.updated === "number" ? j : null; } catch { return null; }
+  }
+  function showBanner(info){
+    const b = $("cloud-banner");
+    if (!info) { b.hidden = true; return; }
+    $("cloud-banner-t").textContent = `Na Dysku Google jest nowsza kopia (${info.count} ${plural(info.count)}, ${stamp(info.updated)}), np. z innego urządzenia. Pobierz ją, zanim zaczniesz pracę — do tego czasu automatyczna kopia jest wstrzymana.`;
+    b.hidden = false;
+  }
+  async function renderCloud(){
+    const on = !!cloudUrl;
+    $("cloud-url").value = cloudUrl;
+    $("cloud-now").hidden = $("cloud-off").hidden = $("cloud-get").hidden = $("reg-get").hidden = !on;
+    $("cloud-connect").textContent = on ? "Zapisz adres i wyślij kopię" : "Połącz i wyślij kopię";
+    if (!on) { cloudState("warn", "Nie połączono. Kopia w chmurze jest wyłączona."); $("cloud-banner").hidden = true; return; }
+    const st = await store.getSetting("cloudState"), last = await store.getSetting("cloudLast");
+    if (st === "blocked") cloudState("err", "Wstrzymano: na Dysku jest nowsza kopia. Stuknij „Pobierz z chmury”.");
+    else if (st === "pending") cloudState("err", "Ostatnia kopia nie doszła (brak internetu?). Ponowię przy następnej zmianie i przy otwarciu programu.");
+    else cloudState("on", last ? "Połączono. Ostatnia kopia: " + last : "Połączono.");
+  }
+  async function sendBackup(){
+    const payload = JSON.stringify({ app: "SleschGPS", day: todayISO(), count: records.length, pin: pinHash || "", csv: buildCSV(records) });
+    try {
+      const r = await fetch(cloudUrl, { method: "POST", body: payload, redirect: "follow" });
+      const j = await r.json();
+      if (!j || !j.ok) throw new Error("bad");
+      return { res: "ok", updated: j.updated };
+    } catch (e) {
+      try { await fetch(cloudUrl, { method: "POST", body: payload, mode: "no-cors" }); } catch { return { res: "fail" }; }
+      const info = await cloudInfo();
+      return { res: "sent", updated: info ? info.updated : 0 };
+    }
+  }
+  async function runBackup(){
+    if (!cloudUrl) return;
+    if (cloudBusy) { cloudAgain = true; return; }
+    cloudBusy = true; cloudState("warn", "Wysyłam kopię…");
+    let out;
+    const info = await cloudInfo();
+    if (info && info.updated > await getSeen()) {
+      await store.setSetting("cloudState", "blocked"); showBanner(info); out = { res: "blocked", info };
+    } else {
+      out = await sendBackup();
+      if (out.res === "fail") await store.setSetting("cloudState", "pending");
+      else {
+        await store.setSetting("cloudState", "");
+        if (out.updated) await store.setSetting("cloudSeen", String(out.updated));
+        await store.setSetting("cloudLast", stamp(out.updated || Date.now()));
+        showBanner(null);
+      }
+    }
+    cloudBusy = false;
+    await renderCloud();
+    if (cloudAgain && out.res !== "blocked") { cloudAgain = false; runBackup(); } else cloudAgain = false;
+    return out;
+  }
+  const scheduleBackup = () => { if (!cloudUrl) return; clearTimeout(cloudTimer); cloudTimer = setTimeout(runBackup, 2500); };
+
+  // cloud copy wins; repairs added on this device since the last sync are kept
+  async function replaceAll(recs, seen){
+    const inCloud = new Set(recs.map(r => r.kod));
+    const fresh = records.filter(r => !inCloud.has(r.kod) && (Date.parse(r.utworzono) || 0) > seen);
+    const freshSet = new Set(fresh.map(r => r.kod));
+    for (const r of records.slice()) if (!inCloud.has(r.kod) && !freshSet.has(r.kod)) await store.del(r.kod);
+    for (const r of recs) await store.put(r);
+    return fresh.length;
+  }
+  function cloudDownload(){
+    if (!cloudUrl) return;
+    openLock({
+      title: "Pobrać kopię z Dysku Google?",
+      note: "Naprawy na tym urządzeniu zostaną zastąpione najnowszą kopią z Dysku. Podaj kod zabezpieczający ustawiony na urządzeniu, które wysłało kopię, albo hasło awaryjne.",
+      okLabel: "Pobierz",
+      handler: async t => {
+        if (!t) return "Wpisz kod lub hasło awaryjne.";
+        const h = await hash(t);
+        let j;
+        try { const r = await fetch(cloudUrl + "?action=latest&h=" + encodeURIComponent(h)); j = await r.json(); }
+        catch { return "Nie udało się połączyć z Dyskiem Google. Sprawdź internet i adres w ustawieniach."; }
+        if (!j || j.error === "auth") return "Nieprawidłowy kod. Spróbuj ponownie.";
+        if (!j.ok) return "Dysk Google zwrócił błąd. Spróbuj ponownie za chwilę.";
+        if (!j.csv) { await store.setSetting("cloudSeen", String(j.updated || 0)); await store.setSetting("cloudState", ""); showBanner(null); renderCloud(); setCloudMsg("Na Dysku nie ma jeszcze żadnej kopii."); return null; }
+        const recs = parseRecords(j.csv);
+        if (!recs) return "Kopia na Dysku jest uszkodzona. Pobierz plik ręcznie z folderu „SleschGPS kopie zapasowe”.";
+        const seenBefore = await getSeen();
+        suppressBackup = true; let kept = 0;
+        try { kept = await replaceAll(recs, seenBefore); } finally { setTimeout(() => { suppressBackup = false; }, 0); }
+        await store.setSetting("cloudSeen", String(j.updated || 0));
+        await store.setSetting("cloudState", "");
+        await store.setSetting("cloudLast", stamp(j.updated || Date.now()) + " (pobrano)");
+        if (j.who === "pin" && !pinHash) { pinHash = h; await store.setSetting("pin", h); renderPin(); }
+        showBanner(null); renderCloud();
+        setCloudMsg(`Pobrano ${recs.length} ${pluralAcc(recs.length)} z kopii z ${stamp(j.updated)}.` + (kept ? ` Zachowano też naprawy dodane na tym urządzeniu (${kept}) — wysyłam je na Dysk.` : ""));
+        if (kept) scheduleBackup();
+        return null;
+      }
+    });
+  }
+  function setCloudMsg(t){ $("cloud-msg").textContent = t; $("backup-msg").textContent = t; }
+  $("cloud-get").onclick = $("reg-get").onclick = $("banner-get").onclick = cloudDownload;
+
+  $("cloud-connect").onclick = async () => {
+    const u = $("cloud-url").value.trim(), m = $("cloud-msg");
+    if (!/^https:\/\/script\.google(usercontent)?\.com\/.+\/exec$/.test(u)) { m.textContent = "To nie wygląda na właściwy adres. Powinien zaczynać się od https://script.google.com/ i kończyć na /exec. Zobacz instrukcję."; return; }
+    m.textContent = ""; $("cloud-connect").disabled = true;
+    cloudUrl = u; await store.setSetting("cloudUrl", u);
+    const out = await runBackup(); $("cloud-connect").disabled = false;
+    m.textContent = out.res === "ok" ? "Gotowe! Kopia jest na Twoim Dysku Google w folderze „SleschGPS kopie zapasowe”."
+      : out.res === "sent" ? "Kopia wysłana. Sprawdź na Dysku Google, czy pojawił się folder „SleschGPS kopie zapasowe”."
+      : out.res === "blocked" ? `Połączono. Na Dysku jest już kopia (${out.info.count} ${plural(out.info.count)}, ${stamp(out.info.updated)}). Stuknij „Pobierz z chmury”, żeby wczytać ją na to urządzenie.`
+      : "Nie udało się wysłać kopii. Sprawdź internet i adres, a w skrypcie ustawienie „Kto ma dostęp: Każdy”.";
+  };
+  $("cloud-now").onclick = async () => { const o = await runBackup(); $("cloud-msg").textContent = o.res === "fail" ? "Nie udało się wysłać kopii." : o.res === "blocked" ? "Najpierw pobierz nowszą kopię z Dysku." : "Kopia wysłana."; };
+  $("cloud-off").onclick = async () => { cloudUrl = ""; await store.setSetting("cloudUrl", ""); await store.setSetting("cloudState", ""); $("cloud-msg").textContent = "Odłączono. Kopie już zapisane zostają na Dysku."; renderCloud(); };
+  $("cloud-guide").onclick = () => { $("guide").hidden = false; };
+  $("guide-close").onclick = () => { $("guide").hidden = true; };
+  $("guide").addEventListener("click", e => { if (e.target.id === "guide") $("guide").hidden = true; });
+  $("guide-copy").onclick = () => {
+    const fallback = () => { const r = document.createRange(); r.selectNodeContents($("guide-code")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); $("guide-msg").textContent = "Skrypt zaznaczony — skopiuj go ręcznie (Ctrl+C)."; };
+    const p = navigator.clipboard?.writeText(GAS_SRC);
+    if (p) p.then(() => { $("guide-msg").textContent = "Skopiowano skrypt. Wklej go w edytorze Google."; }, fallback); else fallback();
+  };
+  document.addEventListener("keydown", e => { if (e.key !== "Escape") return; if (!$("lock").hidden) closeLock(); else if (!$("guide").hidden) $("guide").hidden = true; });
 
   // ---------- card ----------
   function openCard(r){
@@ -1691,7 +2084,12 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     $("c-status").innerHTML = `<span class="pill ${active(r) ? "ok" : "bad"}">${active(r) ? "Gwarancja ważna do " + fmtDate(end) : "Gwarancja wygasła " + fmtDate(end)}</span>`;
     $("c-dl").innerHTML = `
       <dt>Klient</dt><dd>${esc(r.klient)}</dd>
-      <dt>Telefon</dt><dd class="mono">${esc(r.telefon)}<button class="copy" id="c-copy" type="button">Kopiuj</button></dd>
+      <dt>Telefon</dt><dd><span class="mono">${esc(r.telefon)}</span>
+        <div class="phoneacts">
+          <a class="act sms" href="${esc(smsHref(r))}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>SMS</a>
+          <a class="act wa" href="${esc(waHref(r))}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-1.8-1.8l.8-1-1-2z" stroke-width="1.4"/></svg>WhatsApp</a>
+          <button class="act" id="c-copy" type="button">Kopiuj numer</button>
+        </div></dd>
       <dt>Urządzenie</dt><dd>${esc(r.urzadzenie || "—")}</dd>
       <dt>Nr seryjny</dt><dd class="mono">${esc(r.nrSeryjny)}</dd>
       <dt>Data naprawy</dt><dd class="mono">${fmtDate(r.dataNaprawy)}</dd>
@@ -1707,22 +2105,26 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   function closeCard(){ $("sheet").hidden = true; current = null; }
   $("c-close").onclick = closeCard;
   $("sheet").addEventListener("click", e => { if (e.target.id === "sheet") closeCard(); });
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("sheet").hidden) closeCard(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("sheet").hidden && $("lock").hidden) closeCard(); });
 
-  $("c-edit").onclick = () => {
-    const r = current; if (!r) return;
+  $("c-edit").onclick = () => { const r = current; if (r) guard("Edytować naprawę " + r.kod + "?", () => startEdit(r)); };
+  function startEdit(r){
     editing = r;
     $("f-klient").value = r.klient; $("f-tel").value = r.telefon; $("f-data").value = r.dataNaprawy;
     $("f-urz").value = r.urzadzenie || ""; $("f-sn").value = r.nrSeryjny;
     $("f-kwota").value = String(r.kwota).replace(".", ","); $("f-gw").value = String(r.gwarancjaMies); $("f-opis").value = r.opis || "";
     $("form-title").textContent = "Edycja naprawy " + r.kod; $("save").textContent = "Zapisz zmiany"; $("cancel-edit").hidden = false;
     $("form-msg").textContent = ""; closeCard(); show("new"); $("f-klient").focus();
-  };
+  }
 
   let armTimer = null;
   function disarm(){ clearTimeout(armTimer); const b = $("c-del"); b.classList.remove("armed"); b.textContent = "Usuń"; b.dataset.armed = ""; }
+  async function doDelete(r){
+    try { await store.del(r.kod); closeCard(); } catch { setMsg("Nie udało się usunąć."); }
+  }
   $("c-del").onclick = async () => {
     const b = $("c-del");
+    if (pinHash && current) { const r = current; guard("Usunąć naprawę " + r.kod + "?", () => doDelete(r), "Usuń naprawę"); return; }
     if (!b.dataset.armed) { b.dataset.armed = "1"; b.classList.add("armed"); b.textContent = "Na pewno usunąć?"; armTimer = setTimeout(disarm, 4000); return; }
     disarm(); if (!current || !store) return;
     try { await store.del(current.kod); closeCard(); } catch { setMsg("Nie udało się usunąć."); }
@@ -1889,11 +2291,35 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     if (!store) {
       const why = MODE === "local" ? "Ta przeglądarka nie pozwala zapisywać danych (tryb prywatny?)." : "Rejestr jest dostępny tylko po zalogowaniu na koncie właściciela.";
       lm.textContent = why; $("form-msg").textContent = why; $("save").disabled = true;
-      $("export").disabled = $("import").disabled = true; return;
+      $("export").disabled = $("import").disabled = true;
+      ["pin-set","cloud-connect","s-save"].forEach(id => $(id).disabled = true); return;
     }
     $("backup-msg").textContent = store.backupNote;
+    try { const t = await store.getSetting("sms"); if (t) { msgTpl = t; $("s-tpl").value = t; renderPreview(); } } catch {}
     if (MODE !== "local") lm.textContent = "Wczytuję naprawy…";
-    store.subscribe(a => { records = a; renderList(); }, t => { lm.textContent = t; });
+    try { pinHash = (await store.getSetting("pin")) || null; } catch {}
+    renderPin();
+    if (MODE === "local") {
+      try { cloudUrl = (await store.getSetting("cloudUrl")) || ""; } catch {}
+      renderCloud();
+    } else {
+      $("cloud-url").closest(".panel").innerHTML = '<h2>Kopia w chmurze (Dysk Google)</h2><p class="hint">Automatyczna kopia na Dysk Google działa w Twojej wersji aplikacji na GitHubie.</p>';
+    }
+    let first = true, lastCsv = null;
+    store.subscribe(a => {
+      records = a; renderList();
+      const csv = buildCSV(a);
+      if (first) {
+        first = false; lastCsv = csv;
+        if (cloudUrl) (async () => {
+          const info = await cloudInfo(), seen = await getSeen();
+          if (info && info.updated > seen) { await store.setSetting("cloudState", "blocked"); showBanner(info); renderCloud(); }
+          else if ((await store.getSetting("cloudState")) === "pending") scheduleBackup();
+        })().catch(() => {});
+        return;
+      }
+      if (csv !== lastCsv) { lastCsv = csv; if (!suppressBackup) scheduleBackup(); }
+    }, t => { lm.textContent = t; });
   })();
 })();
 </script>
