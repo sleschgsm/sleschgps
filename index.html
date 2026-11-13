@@ -157,6 +157,89 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .x{border:0;background:var(--surface-2);color:var(--fg);width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer;flex:none}
 .copy{border:0;background:none;color:var(--accent);font:600 13px var(--f-body);cursor:pointer;padding:0 0 0 8px}
 @media (prefers-reduced-motion:no-preference){.card{animation:up .18s ease-out}@keyframes up{from{transform:translateY(16px);opacity:.6}}}
+
+/* ---- v3 additions ---- */
+:root{--info:#3d5a99;--info-bg:#e5ebf7;--warn-bg:#fbeedd}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--info:#9db4ec;--info-bg:#1e2840;--warn-bg:#3a2a17}}
+:root[data-theme="dark"]{--info:#9db4ec;--info-bg:#1e2840;--warn-bg:#3a2a17}
+.navicon{flex:none;width:50px;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);border-radius:10px;cursor:pointer;display:grid;place-items:center;position:relative}
+.navicon svg{width:24px;height:24px}
+.navicon[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:var(--signal);color:#fff;font:700 11px/20px var(--f-body);text-align:center}
+.toggles{display:flex;flex-wrap:wrap;gap:6px;text-transform:none;letter-spacing:0;font-weight:400}
+.tg{font:600 14px var(--f-body);padding:8px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.tg[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.tg[aria-pressed="true"]::before{content:"✓"}
+.quick{display:grid;gap:6px}
+.quick .tg{border-style:dashed;border-color:var(--accent);color:var(--accent);background:transparent}
+.quick .tg b{font-family:var(--f-mono);font-weight:600}
+.fieldhint{font-size:13px;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400}
+.fieldhint.client{color:var(--fg);background:var(--info-bg);border-radius:8px;padding:8px 10px}
+.linkbtn{border:0;background:none;padding:0;color:var(--accent);font:600 13px var(--f-body);cursor:pointer;text-decoration:underline}
+.st{font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:2px 8px;border-radius:99px;white-space:nowrap;justify-self:end;align-self:center}
+.st-przyjete{background:var(--info-bg);color:var(--info)}
+.st-naprawa{background:var(--surface-2);color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.st-czesci{background:var(--warn-bg);color:var(--signal)}
+.st-gotowe{background:var(--ok-bg);color:var(--ok)}
+.st-wydane{background:var(--surface-2);color:var(--muted)}
+.st-wyslane{background:var(--surface-2);color:var(--muted);box-shadow:inset 0 0 0 1px var(--line)}
+.summary{display:grid;gap:10px;padding:14px;background:var(--surface);border:1px solid var(--line);border-radius:12px}
+.summary .mon{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.summary .mon b{font-family:var(--f-display);font-size:19px;font-weight:600}
+.summary .mon button{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);font-size:18px;cursor:pointer}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.kpi{background:var(--surface-2);border-radius:10px;padding:10px 12px;min-width:0}
+.kpi .v{font:600 22px var(--f-mono);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.kpi .l{font-size:12px;color:var(--muted)}
+.paysplit{font-size:13px;color:var(--muted)}
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.filters .tg{white-space:nowrap;flex:none;padding:6px 11px;font-size:13px}
+.filters .tg[aria-pressed="true"]::before{content:none}
+.filters .n{font-family:var(--f-mono);opacity:.75}
+.iconbtn{flex:none;width:46px;border:1px solid var(--line);background:var(--surface);color:var(--accent);border-radius:8px;cursor:pointer;display:grid;place-items:center}
+.iconbtn svg{width:22px;height:22px}
+.sec{display:grid;gap:10px;padding-top:14px;border-top:1px solid var(--line)}
+.sec h3{margin:0;font:600 12px var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stchips{display:flex;flex-wrap:wrap;gap:6px}
+.stchips .tg{padding:7px 11px;font-size:13px}
+.stchips .tg[aria-pressed="true"]::before{content:none}
+.msgrow{display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.msgrow .t{font-weight:600;font-size:14px;min-width:0}
+.msgrow .phoneacts{grid-column:1/-1;margin-top:0}
+.msgrow.pulse{border-color:var(--accent);box-shadow:0 0 0 3px var(--focus)}
+.msgrow.off{opacity:.6}
+.sent{font:600 12px var(--f-body);padding:4px 10px;border-radius:99px;border:1px dashed var(--muted);background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap}
+.sent.yes{border-style:solid;border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
+.trk{display:flex;gap:8px;flex-wrap:wrap}
+.trk select{flex:1 1 140px;min-width:0}
+.trk input{flex:2 1 180px;min-width:0;font-family:var(--f-mono)}
+.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
+.photos button.ph{aspect-ratio:1;border:1px solid var(--line);border-radius:8px;overflow:hidden;padding:0;cursor:pointer;background:var(--surface-2);max-width:100%}
+.photos img{width:100%;height:100%;object-fit:cover;display:block}
+.photos .add{aspect-ratio:1;border:1.5px dashed var(--accent);border-radius:8px;background:transparent;color:var(--accent);font:600 13px var(--f-body);cursor:pointer;display:grid;place-items:center;text-align:center;padding:4px}
+.phgroup{display:grid;gap:6px}
+.phgroup .lbl{font-size:13px;color:var(--muted)}
+.paysel{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.viewer{position:fixed;inset:0;z-index:45;background:#000e;display:grid;grid-template-rows:1fr auto}
+.viewer img{max-width:100%;max-height:100%;object-fit:contain;justify-self:center;align-self:center;min-height:0}
+.viewer .bar{display:flex;gap:10px;justify-content:center;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.viewer .bar .btn{background:#1e2833;color:#fff;border-color:#2c3946}
+.viewer .bar .btn.danger{color:#f08a80;border-color:#f08a80}
+.partsadd{display:grid;grid-template-columns:1fr 90px auto;gap:8px;align-items:end}
+@media (max-width:420px){.partsadd{grid-template-columns:1fr 70px}.partsadd .btn{grid-column:1/-1}}
+.plist{display:grid;gap:6px}
+.pitem{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.pitem input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent);padding:0}
+.pitem .nm{min-width:0;overflow-wrap:anywhere;font-weight:500}
+.pitem.done .nm{text-decoration:line-through;color:var(--muted)}
+.pitem .qty{font:600 13px var(--f-mono);color:var(--muted)}
+.pitem .del,.citem .del{border:0;background:none;color:var(--bad);font-size:20px;cursor:pointer;width:32px;height:32px}
+.citem{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
+.citem .nm{min-width:0;overflow-wrap:anywhere}
+.citem .nm small{display:block;color:var(--muted)}
+.citem .pr{font:600 14px var(--f-mono)}
+.cadd{display:grid;grid-template-columns:2fr 1.4fr 1fr;gap:8px;align-items:end}
+@media (max-width:560px){.cadd{grid-template-columns:1fr 1fr}.cadd label:first-child{grid-column:1/-1}}
 </style>
 
 <div class="wrap">
@@ -173,6 +256,7 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
       <button id="tab-new" role="tab" aria-selected="true">Nowa naprawa</button>
       <button id="tab-list" role="tab" aria-selected="false">Rejestr napraw</button>
     </div>
+    <button class="navicon" id="tab-parts" type="button" aria-pressed="false" aria-label="Części do zamówienia" title="Części do zamówienia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg><span class="badge" id="parts-badge" hidden></span></button>
     <button class="gear" id="tab-set" type="button" aria-pressed="false" aria-label="Ustawienia" title="Ustawienia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
   </div>
 
@@ -180,25 +264,35 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 
   <form class="panel" id="form" autocomplete="off">
     <h2 id="form-title">Nowa naprawa</h2>
+    <div class="quick" id="f-quick" hidden><div class="eyebrow">Szybki wybór z cennika</div><div class="toggles" id="f-cennik"></div></div>
     <div class="grid">
       <label class="full">Imię i nazwisko klienta<input id="f-klient" required placeholder="np. Jan Kowalski"></label>
-      <label>Telefon<input id="f-tel" type="tel" inputmode="tel" required placeholder="np. 600 123 456"></label>
+      <label>Telefon<input id="f-tel" type="tel" inputmode="tel" required placeholder="np. 600 123 456"><span class="fieldhint client" id="f-tel-hint" hidden></span></label>
       <label>Data naprawy<input id="f-data" type="date" required></label>
       <label>Urządzenie<input id="f-urz" placeholder="np. TomTom GO 6250"></label>
       <label>Numer seryjny<span class="snrow"><input id="f-sn" class="mono" required placeholder="np. QE2193G01234"><button class="btn scanbtn" id="scan" type="button" hidden aria-label="Skanuj kod"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3M7 8v8M10.5 8v8M14 8v8M17 8v8"/></svg>Skanuj</button></span><span class="msg" id="scan-msg"></span></label>
-      <input id="scan-photo" type="file" accept="image/*" capture="environment" hidden>
+      <input id="scan-photo" type="file" accept="image/*" hidden>
+      <div class="full" style="display:grid;gap:6px"><span class="eyebrow">Klient zostawił</span><div class="toggles" id="f-acc"></div></div>
+      <label class="full">Usterka zgłoszona przez klienta<textarea id="f-usterka" placeholder="np. nie ładuje się, pęknięty ekran, nie łapie GPS"></textarea></label>
       <label class="money">Kwota naprawy<input id="f-kwota" type="text" inputmode="decimal" required placeholder="0,00"><span>zł</span></label>
       <label>Okres gwarancji<select id="f-gw"><option value="1">1 miesiąc</option><option value="3" selected>3 miesiące</option><option value="6">6 miesięcy</option><option value="12">12 miesięcy</option><option value="24">24 miesiące</option></select></label>
       <label class="full">Zakres naprawy (opcjonalnie)<textarea id="f-opis" placeholder="np. wymiana baterii, aktualizacja map"></textarea></label>
+      <label>Płatność<select id="f-plat"><option value="">— nie wybrano —</option><option value="gotowka">Gotówka</option><option value="blik">BLIK</option><option value="przelew">Przelew</option><option value="karta">Karta</option></select></label>
+      <label>Dokument<select id="f-dok"><option value="">— nie wybrano —</option><option value="paragon">Paragon</option><option value="faktura">Faktura</option><option value="brak">Bez dokumentu</option></select></label>
     </div>
     <div class="actions">
-      <button class="btn primary" id="save" type="submit">Zapisz i wygeneruj QR</button>
+      <button class="btn primary" id="save" type="submit">Zapisz przyjęcie</button>
       <button class="btn" id="cancel-edit" type="button" hidden>Anuluj edycję</button>
       <span class="msg" id="form-msg"></span>
     </div>
   </form>
 
   <section id="register" hidden style="display:grid;gap:12px">
+    <div class="summary">
+      <div class="mon"><button type="button" id="sum-prev" aria-label="Poprzedni miesiąc">‹</button><b id="sum-title"></b><button type="button" id="sum-next" aria-label="Następny miesiąc">›</button></div>
+      <div class="kpis"><div class="kpi"><div class="v" id="sum-n">0</div><div class="l">napraw w miesiącu</div></div><div class="kpi"><div class="v" id="sum-zl">0,00 zł</div><div class="l">przychód (suma kwot)</div></div></div>
+      <div class="paysplit" id="sum-pay"></div>
+    </div>
     <div class="backup">
       <span class="msg" id="backup-msg">Kopia zapasowa rejestru</span>
       <div class="actions">
@@ -208,14 +302,28 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
         <input id="import-file" type="file" accept=".csv,text/csv" hidden>
       </div>
     </div>
-    <div class="search"><input id="q" type="search" placeholder="Szukaj: nazwisko, telefon, nr seryjny, kod gwarancji"></div>
+    <div class="filters" id="filters"></div>
+    <div class="search"><input id="q" type="search" placeholder="Szukaj: nazwisko, telefon, nr seryjny, kod"><button class="iconbtn" id="q-scan" type="button" hidden aria-label="Skanuj kod z karty gwarancyjnej" title="Skanuj kod z karty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8V5a2 2 0 0 1 2-2h3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M8 21H5a2 2 0 0 1-2-2v-3"/><rect x="7" y="7" width="4" height="4"/><rect x="13" y="13" width="4" height="4"/><path d="M13 7h4v4M7 13v4h4"/></svg></button></div>
+    <span class="msg" id="q-msg"></span>
     <div class="msg" id="list-msg"></div>
     <div class="list" id="list"></div>
   </section>
+  <section class="panel" id="parts" hidden>
+    <h2>Części do zamówienia</h2>
+    <p class="hint">Zapisz, co Ci się kończy. Odhacz, gdy zamówisz.</p>
+    <form class="partsadd" id="p-form" autocomplete="off">
+      <label>Część<input id="p-name" placeholder="np. bateria GO 6250"></label>
+      <label>Ilość<input id="p-qty" inputmode="numeric" placeholder="1"></label>
+      <button class="btn primary" type="submit">Dodaj</button>
+    </form>
+    <div class="plist" id="p-list"></div>
+    <div class="actions"><button class="btn" id="p-clear" type="button" hidden>Usuń odhaczone</button><span class="msg" id="p-msg"></span></div>
+  </section>
   <div class="stack" id="settings" hidden>
   <section class="panel">
-    <h2>Wiadomość „naprawa gotowa”</h2>
-    <p class="hint">Ten tekst wyślesz przyciskiem SMS lub WhatsApp na karcie naprawy. Słowa w nawiasach klamrowych program sam zamieni na dane klienta. Stuknij, żeby wstawić:</p>
+    <h2>Wiadomości do klienta</h2>
+    <p class="hint">Te teksty wyślesz przyciskami SMS lub WhatsApp na karcie naprawy. Słowa w nawiasach klamrowych program sam zamieni na dane klienta. Stuknij, żeby wstawić:</p>
+    <label>Którą wiadomość edytujesz<select id="s-which"></select></label>
     <div class="chips" id="s-chips"></div>
     <label>Treść wiadomości<textarea id="s-tpl"></textarea></label>
     <div style="display:grid;gap:6px">
@@ -229,8 +337,20 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
     </div>
   </section>
   <section class="panel">
+    <h2>Cennik usług</h2>
+    <p class="hint">Usługi z cennika pojawią się nad formularzem nowej naprawy. Jedno stuknięcie wpisze urządzenie, zakres naprawy i kwotę.</p>
+    <div class="plist" id="c-list"></div>
+    <form class="cadd" id="c-form" autocomplete="off">
+      <label>Usługa<input id="c-name" placeholder="np. Wymiana baterii"></label>
+      <label>Urządzenie (opcjonalnie)<input id="c-dev" placeholder="np. TomTom GO 6250"></label>
+      <label class="money">Cena<input id="c-price" inputmode="decimal" placeholder="0,00"><span>zł</span></label>
+      <button class="btn primary" type="submit">Dodaj do cennika</button>
+    </form>
+    <span class="msg" id="c-msg2"></span>
+  </section>
+  <section class="panel">
     <h2>Kod zabezpieczający</h2>
-    <p class="hint">Kod chroni zapisane naprawy przed przypadkową zmianą. Po jego ustawieniu edycja, usuwanie i wczytywanie z pliku wymagają podania kodu. Gdy zapomnisz kodu, użyj hasła awaryjnego.</p>
+    <p class="hint">Kod chroni zapisane naprawy przed przypadkową zmianą. Po jego ustawieniu edycja danych, usuwanie napraw i zdjęć oraz wczytywanie z pliku wymagają podania kodu. Zmiana statusu, wysyłka i oznaczanie wiadomości działają bez kodu. Gdy zapomnisz kodu, użyj hasła awaryjnego.</p>
     <div class="status" id="pin-status"><span class="dot"></span><span id="pin-status-t"></span></div>
     <div class="grid" id="pin-form" hidden>
       <label>Nowy kod<input id="pin-new" type="password" autocomplete="new-password" inputmode="text"></label>
@@ -315,26 +435,77 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 </div>
 
 <div class="sheet" id="sheet" hidden>
-  <div class="card" role="dialog" aria-modal="true" aria-labelledby="c-code">
+  <div class="card" id="card" role="dialog" aria-modal="true" aria-labelledby="c-code">
     <div class="card-top">
-      <div><div class="eyebrow">Karta gwarancyjna</div><div class="code" id="c-code"></div></div>
+      <div><div class="eyebrow">Zlecenie serwisowe</div><div class="code" id="c-code"></div></div>
       <button class="x" id="c-close" aria-label="Zamknij">×</button>
     </div>
-    <div class="qrbox"><canvas id="c-qr" width="220" height="220"></canvas></div>
-    <div id="c-status" style="justify-self:center"></div>
-    <dl id="c-dl"></dl>
-    <div class="actions">
-      <button class="btn primary" id="c-pdf">Drukuj kartę (PDF A6)</button>
-      <button class="btn" id="c-card">Obrazek (PNG)</button>
-      <button class="btn" id="c-qrpng">Sam QR</button>
+    <div class="sec" style="border-top:0;padding-top:0">
+      <div class="stchips" id="c-st"></div>
+      <div id="c-wty"></div>
     </div>
-    <div class="actions">
-      <button class="btn" id="c-edit">Edytuj</button>
-      <button class="btn danger" id="c-del">Usuń</button>
-      <span class="msg" id="c-msg"></span>
+    <div class="sec">
+      <h3>Klient</h3>
+      <div id="c-client"></div>
+    </div>
+    <div class="sec">
+      <h3>Wiadomości do klienta</h3>
+      <div style="display:grid;gap:8px" id="c-msgs"></div>
+    </div>
+    <div class="sec">
+      <h3>Wysyłka do klienta</h3>
+      <div class="trk">
+        <select id="c-carrier" aria-label="Przewoźnik"></select>
+        <input id="c-trk" placeholder="Numer przesyłki" autocomplete="off" aria-label="Numer przesyłki">
+      </div>
+      <div class="actions">
+        <button class="btn small" id="c-trk-scan" type="button" hidden>Skanuj kod paczki</button>
+        <button class="btn small" id="c-trk-photo" type="button" hidden>Odczytaj ze zdjęcia</button>
+        <button class="btn small primary" id="c-trk-save" type="button">Zapisz przesyłkę</button>
+        <a class="btn small" id="c-trk-link" href="#" target="_blank" rel="noopener" hidden>Śledź przesyłkę</a>
+      </div>
+      <span class="msg" id="c-trk-msg"></span>
+    </div>
+    <div class="sec">
+      <h3>Szczegóły naprawy</h3>
+      <dl id="c-dl"></dl>
+      <div class="paysel">
+        <label>Płatność<select id="c-plat"><option value="">— nie wybrano —</option><option value="gotowka">Gotówka</option><option value="blik">BLIK</option><option value="przelew">Przelew</option><option value="karta">Karta</option></select></label>
+        <label>Dokument<select id="c-dok"><option value="">— nie wybrano —</option><option value="paragon">Paragon</option><option value="faktura">Faktura</option><option value="brak">Bez dokumentu</option></select></label>
+      </div>
+    </div>
+    <div class="sec">
+      <h3>Zdjęcia urządzenia</h3>
+      <div class="phgroup"><span class="lbl">Przy przyjęciu</span><div class="photos" id="ph-przyjecie"></div></div>
+      <div class="phgroup"><span class="lbl">Po naprawie</span><div class="photos" id="ph-po"></div></div>
+      <span class="msg" id="ph-msg"></span>
+    </div>
+    <div class="sec">
+      <h3>Dokumenty</h3>
+      <div class="actions">
+        <button class="btn" id="c-intake">Potwierdzenie przyjęcia (PDF)</button>
+        <button class="btn primary" id="c-pdf">Karta gwarancyjna (PDF A6)</button>
+        <button class="btn" id="c-card">Karta (PNG)</button>
+        <button class="btn" id="c-label">Naklejka z QR (PDF 50×30 mm)</button>
+        <button class="btn" id="c-qrpng">Sam QR</button>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="actions">
+        <button class="btn" id="c-edit">Edytuj dane</button>
+        <button class="btn danger" id="c-del">Usuń naprawę</button>
+        <span class="msg" id="c-msg"></span>
+      </div>
     </div>
   </div>
 </div>
+
+<div class="viewer" id="viewer" hidden>
+  <img id="viewer-img" alt="Zdjęcie urządzenia">
+  <div class="bar"><button class="btn" id="viewer-close" type="button">Zamknij</button><button class="btn danger" id="viewer-del" type="button">Usuń zdjęcie</button></div>
+</div>
+<input id="photo-in" type="file" accept="image/*" multiple hidden>
+<input id="gallery-in" type="file" accept="image/*" hidden>
 
 <script>
 /* QRCode for JavaScript (c) 2009 Kazuhiko Arase, MIT license; node port from qrcode-terminal (Apache-2.0) */
@@ -1602,8 +1773,27 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
 (() => {
   const $ = id => document.getElementById(id);
   const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const FIELDS = [["kod","Kod gwarancji"],["klient","Klient"],["telefon","Telefon"],["urzadzenie","Urządzenie"],["nrSeryjny","Nr seryjny"],["dataNaprawy","Data naprawy"],["gwarancjaMies","Gwarancja (mies.)"],["gwarancjaDo","Gwarancja do"],["kwota","Kwota (zł)"],["opis","Zakres naprawy"],["utworzono","Utworzono"]];
+  const FIELDS = [["kod","Kod gwarancji"],["klient","Klient"],["telefon","Telefon"],["urzadzenie","Urządzenie"],["nrSeryjny","Nr seryjny"],["dataNaprawy","Data naprawy"],["gwarancjaMies","Gwarancja (mies.)"],["gwarancjaDo","Gwarancja do"],["kwota","Kwota (zł)"],["opis","Zakres naprawy"],["utworzono","Utworzono"],
+    ["status","Status"],["akcesoria","Akcesoria"],["usterka","Usterka"],["platnosc","Płatność"],["dokument","Dokument"],["przewoznik","Przewoźnik"],["nrPrzesylki","Nr przesyłki"],["wiadomosci","Wiadomości"]];
+  const STATUSES = [["przyjete","Przyjęte"],["naprawa","W naprawie"],["czesci","Czeka na części"],["gotowe","Gotowe"],["wydane","Wydane"],["wyslane","Wysłane"]];
+  const ACCESSORIES = ["Urządzenie","Uchwyt","Kabel","Ładowarka","Karta pamięci"];
+  const PAY = { gotowka: "Gotówka", blik: "BLIK", przelew: "Przelew", karta: "Karta" };
+  const DOCS = { paragon: "Paragon", faktura: "Faktura", brak: "Bez dokumentu" };
+  const CARRIERS = [
+    ["inpost", "InPost", n => "https://inpost.pl/sledzenie-przesylek?number=" + n],
+    ["dpd", "DPD", n => "https://tracktrace.dpd.com.pl/parcelDetails?p1=" + n],
+    ["dhl", "DHL", n => "https://sprawdz.dhl.com.pl/laststatus.aspx?NR1=" + n],
+    ["poczta", "Poczta Polska", n => "https://emonitoring.poczta-polska.pl/?numer=" + n],
+    ["gls", "GLS", n => "https://gls-group.eu/PL/pl/sledzenie-paczek?match=" + n],
+    ["ups", "UPS", n => "https://wwwapps.ups.com/WebTracking?loc=pl_PL&tracknum=" + n],
+    ["inny", "Inny przewoźnik", null]
+  ];
   let store = null, records = [], current = null, editing = null;
+  const stOf = r => r.status || "wydane";
+  const stLabel = k => (STATUSES.find(s => s[0] === k) || STATUSES[4])[1];
+  const carrier = k => CARRIERS.find(c => c[0] === k);
+  const trackUrl = r => { const c = carrier(r.przewoznik); return c && c[2] && r.nrPrzesylki ? c[2](encodeURIComponent(r.nrPrzesylki)) : ""; };
+  const accText = r => (r.akcesoria && r.akcesoria.length) ? r.akcesoria.join(", ") : "—";
 
   // ---------- helpers ----------
   const todayISO = () => { const d = new Date(); d.setMinutes(d.getMinutes()-d.getTimezoneOffset()); return d.toISOString().slice(0,10); };
@@ -1699,49 +1889,94 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   }
 
   // ---------- tabs ----------
+  let view = "new";
   function show(tab){
+    view = tab;
     $("tab-new").setAttribute("aria-selected", tab === "new");
     $("tab-list").setAttribute("aria-selected", tab === "list");
     $("form").hidden = tab !== "new";
     $("register").hidden = tab !== "list";
     $("tab-set").setAttribute("aria-pressed", tab === "set");
     $("settings").hidden = tab !== "set";
+    $("tab-parts").setAttribute("aria-pressed", tab === "parts");
+    $("parts").hidden = tab !== "parts";
   }
-  $("tab-set").onclick = () => { if (!$("settings").hidden) { show("list"); return; } show("set"); renderPreview(); };
+  $("tab-set").onclick = () => { if (view === "set") { show("list"); return; } show("set"); renderPreview(); };
+  $("tab-parts").onclick = () => { if (view === "parts") { show("list"); return; } show("parts"); };
   $("tab-new").onclick = () => show("new");
   $("tab-list").onclick = () => show("list");
 
   // ---------- form ----------
+  $("f-acc").innerHTML = ACCESSORIES.map(a => `<button type="button" class="tg" aria-pressed="false" data-acc="${esc(a)}">${esc(a)}</button>`).join("");
+  $("f-acc").addEventListener("click", e => { const b = e.target.closest(".tg"); if (b) b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); });
+  const getAcc = () => [...$("f-acc").querySelectorAll('.tg[aria-pressed="true"]')].map(b => b.dataset.acc);
+  const setAcc = list => $("f-acc").querySelectorAll(".tg").forEach(b => b.setAttribute("aria-pressed", (list || []).includes(b.dataset.acc)));
   function resetForm(){
     $("form").reset(); $("f-data").value = todayISO(); $("f-gw").value = "3";
+    setAcc(["Urządzenie"]); $("f-tel-hint").hidden = true;
     editing = null; $("form-title").textContent = "Nowa naprawa";
-    $("save").textContent = "Zapisz i wygeneruj QR"; $("cancel-edit").hidden = true;
+    $("save").textContent = "Zapisz przyjęcie"; $("cancel-edit").hidden = true;
   }
   resetForm();
   $("cancel-edit").onclick = () => { resetForm(); $("form-msg").textContent = ""; };
+
+  // returning client
+  function clientHistory(phone, exceptKod){
+    const p = phoneIntl(phone); if (p.length < 9) return [];
+    return records.filter(r => r.kod !== exceptKod && phoneIntl(r.telefon) === p);
+  }
+  function renderTelHint(){
+    const h = $("f-tel-hint"), list = clientHistory($("f-tel").value, editing && editing.kod);
+    if (!list.length) { h.hidden = true; return; }
+    const last = list[0];
+    if (!$("f-klient").value.trim()) $("f-klient").value = last.klient;
+    h.innerHTML = `Stały klient: <b>${esc(last.klient)}</b> · ${list.length} ${list.length === 1 ? "wcześniejsza naprawa" : few(list.length) ? "wcześniejsze naprawy" : "wcześniejszych napraw"}, ostatnia ${fmtDate(last.dataNaprawy)} · <button type="button" class="linkbtn" id="f-tel-hist">Pokaż historię</button>`;
+    h.hidden = false;
+    $("f-tel-hist").onclick = () => { $("q").value = last.telefon; filterSt = "all"; show("list"); renderList(); };
+  }
+  $("f-tel").addEventListener("input", renderTelHint);
+
+  // price list quick fill
+  let cennik = [];
+  function renderQuick(){
+    $("f-quick").hidden = !cennik.length;
+    $("f-cennik").innerHTML = cennik.map(c => `<button type="button" class="tg" data-id="${esc(c.id)}">${esc(c.nazwa)}${c.urzadzenie ? " · " + esc(c.urzadzenie) : ""} <b>${zl(c.cena)}</b></button>`).join("");
+  }
+  $("f-cennik").addEventListener("click", e => {
+    const b = e.target.closest(".tg"); if (!b) return;
+    const c = cennik.find(x => x.id === b.dataset.id); if (!c) return;
+    if (c.urzadzenie) $("f-urz").value = c.urzadzenie;
+    const o = $("f-opis").value.trim(); $("f-opis").value = o ? (o.includes(c.nazwa) ? o : o + ", " + c.nazwa) : c.nazwa;
+    $("f-kwota").value = String(c.cena).replace(".", ",");
+    $("form-msg").textContent = "Wpisano z cennika: " + c.nazwa;
+  });
 
   $("form").addEventListener("submit", async e => {
     e.preventDefault();
     const msg = $("form-msg"); msg.className = "msg";
     const kw = parseKwota($("f-kwota").value);
-    if (isNaN(kw)) { msg.className = "msg err"; msg.textContent = "Wpisz kwotę jako liczbę, np. 150 albo 149,99."; return; }
+    if (isNaN(kw)) { msg.className = "msg err"; msg.textContent = "Wpisz kwotę jako liczbę, np. 150 albo 149,99. Jeśli jeszcze nie znasz kwoty, wpisz 0."; return; }
     if (!store) { msg.className = "msg err"; msg.textContent = "Zapis jest niedostępny w tym widoku."; return; }
     const rec = {
+      ...(editing || {}),
       klient: $("f-klient").value.trim(), telefon: $("f-tel").value.trim(),
       dataNaprawy: $("f-data").value, urzadzenie: $("f-urz").value.trim(),
       nrSeryjny: $("f-sn").value.trim().toUpperCase(), kwota: kw,
-      gwarancjaMies: Number($("f-gw").value), opis: $("f-opis").value.trim()
+      gwarancjaMies: Number($("f-gw").value), opis: $("f-opis").value.trim(),
+      akcesoria: getAcc(), usterka: $("f-usterka").value.trim(),
+      platnosc: $("f-plat").value, dokument: $("f-dok").value
     };
     $("save").disabled = true; msg.textContent = "Zapisuję…";
     try {
-      if (editing) { rec.kod = editing.kod; rec.utworzono = editing.utworzono || new Date().toISOString(); }
+      if (editing) { rec.kod = editing.kod; rec.utworzono = editing.utworzono || new Date().toISOString(); rec.status = stOf(editing); }
       else {
         let kod; for (let i = 0; i < 5; i++) { kod = genCode(); if (!(await store.exists(kod))) break; }
-        rec.kod = kod; rec.utworzono = new Date().toISOString();
+        rec.kod = kod; rec.utworzono = new Date().toISOString(); rec.status = "przyjete"; rec.wiadomosci = {};
       }
       await store.put(rec);
-      msg.textContent = editing ? "Zmiany zapisane." : "Naprawa zapisana.";
-      resetForm(); openCard(rec);
+      msg.textContent = editing ? "Zmiany zapisane." : "Przyjęcie zapisane. Wyślij klientowi potwierdzenie.";
+      const wasNew = !editing;
+      resetForm(); openCard(rec, wasNew ? "przyjecie" : null);
     } catch (err) {
       msg.className = "msg err";
       msg.textContent = err && err.code === "quota_exceeded" ? "Baza jest pełna. Usuń stare wpisy i spróbuj ponownie." : "Nie udało się zapisać. Spróbuj ponownie.";
@@ -1752,13 +1987,38 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   const few = n => n%10>=2 && n%10<=4 && (n%100<10||n%100>=20);
   function plural(n){ return n === 1 ? "naprawa" : few(n) ? "naprawy" : "napraw"; }
   function pluralAcc(n){ return n === 1 ? "naprawę" : few(n) ? "naprawy" : "napraw"; }
+  let filterSt = "all";
+  const MONTHS = ["Styczeń","Luty","Marzec","Kwiecień","Maj","Czerwiec","Lipiec","Sierpień","Wrzesień","Październik","Listopad","Grudzień"];
+  let sumY = new Date().getFullYear(), sumM = new Date().getMonth();
+  function renderSummary(){
+    const key = `${sumY}-${String(sumM+1).padStart(2,"0")}`;
+    const list = records.filter(r => (r.dataNaprawy || "").startsWith(key));
+    const total = list.reduce((a, r) => a + (Number(r.kwota) || 0), 0);
+    $("sum-title").textContent = `${MONTHS[sumM]} ${sumY}`;
+    $("sum-n").textContent = list.length;
+    $("sum-zl").textContent = zl(total);
+    const by = {}; list.forEach(r => { const k = r.platnosc || ""; by[k] = (by[k] || 0) + (Number(r.kwota) || 0); });
+    const parts = Object.keys(PAY).filter(k => by[k]).map(k => `${PAY[k]} ${zl(by[k])}`);
+    if (by[""]) parts.push(`bez płatności ${zl(by[""])}`);
+    $("sum-pay").textContent = parts.length ? parts.join(" · ") : "Brak napraw w tym miesiącu.";
+  }
+  $("sum-prev").onclick = () => { if (--sumM < 0) { sumM = 11; sumY--; } renderSummary(); };
+  $("sum-next").onclick = () => { if (++sumM > 11) { sumM = 0; sumY++; } renderSummary(); };
+  function renderFilters(){
+    const cnt = { all: records.length }; STATUSES.forEach(([k]) => cnt[k] = 0); records.forEach(r => cnt[stOf(r)]++);
+    $("filters").innerHTML = [["all","Wszystkie"], ...STATUSES].filter(([k]) => k === "all" || cnt[k]).map(([k, l]) =>
+      `<button type="button" class="tg" data-f="${k}" aria-pressed="${filterSt === k}">${l} <span class="n">${cnt[k]}</span></button>`).join("");
+  }
+  $("filters").addEventListener("click", e => { const b = e.target.closest(".tg"); if (!b) return; filterSt = b.dataset.f; renderList(); });
   function renderList(){
+    if (filterSt !== "all" && !records.some(r => stOf(r) === filterSt)) filterSt = "all";
+    renderFilters(); renderSummary();
     const q = $("q").value.trim().toLowerCase().replace(/\s/g,"");
-    const items = records.filter(r => !q || [r.klient, r.telefon, r.nrSeryjny, r.kod, r.urzadzenie].some(v => String(v||"").toLowerCase().replace(/\s/g,"").includes(q)));
+    const items = records.filter(r => (filterSt === "all" || stOf(r) === filterSt) && (!q || [r.klient, r.telefon, r.nrSeryjny, r.kod, r.urzadzenie, r.nrPrzesylki].some(v => String(v||"").toLowerCase().replace(/\s/g,"").includes(q))));
     $("count").textContent = records.length ? `${records.length} ${plural(records.length)}` : "";
     const list = $("list");
     if (!records.length) {
-      list.innerHTML = `<div class="empty"><strong>Rejestr jest pusty</strong><span>Tu pojawią się zapisane naprawy z kodem gwarancji, statusem i kwotą. Dodaj pierwszą w zakładce „Nowa naprawa” albo wczytaj kopię z pliku.</span></div>`;
+      list.innerHTML = `<div class="empty"><strong>Rejestr jest pusty</strong><span>Tu pojawią się przyjęte naprawy ze statusem, kwotą i kodem. Dodaj pierwszą w zakładce „Nowa naprawa” albo wczytaj kopię z pliku.</span></div>`;
       return;
     }
     if (!items.length) { list.innerHTML = `<div class="empty"><span>Nic nie pasuje do wyszukiwania.</span></div>`; return; }
@@ -1766,16 +2026,19 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
       <button class="row" data-kod="${esc(r.kod)}">
         <span class="who">${esc(r.klient)}</span><span class="amt">${zl(r.kwota)}</span>
         <span class="meta">${fmtDate(r.dataNaprawy)} · ${esc(r.urzadzenie || "urządzenie")} · <span class="mono">${esc(r.nrSeryjny)}</span><br><span class="mono">${esc(r.kod)}</span></span>
-        <span class="pill ${active(r) ? "ok" : "bad"}">${active(r) ? "Gwarancja" : "Wygasła"}</span>
+        <span class="st st-${stOf(r)}">${stLabel(stOf(r))}</span>
       </button>`).join("");
   }
-  $("q").addEventListener("input", renderList);
+  $("q").addEventListener("input", () => { $("q-msg").textContent = ""; renderList(); });
   $("list").addEventListener("click", e => { const b = e.target.closest(".row"); if (b) { const r = records.find(x => x.kod === b.dataset.kod); if (r) openCard(r); } });
 
   // ---------- CSV export / import ----------
   const csvCell = v => { const s = String(v ?? ""); return /[;"\n\r]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s; };
-  const buildCSV = recs => "\ufeff" + [FIELDS.map(f => f[1]).join(";")].concat(recs.map(r => FIELDS.map(([k]) =>
-      csvCell(k === "gwarancjaDo" ? warrantyEnd(r) : k === "kwota" ? String(r.kwota).replace(".", ",") : r[k])).join(";"))).join("\r\n");
+  const csvVal = (r, k) => k === "gwarancjaDo" ? warrantyEnd(r) : k === "kwota" ? String(r.kwota).replace(".", ",")
+    : k === "status" ? stLabel(stOf(r)) : k === "akcesoria" ? (r.akcesoria || []).join(", ")
+    : k === "platnosc" ? (PAY[r.platnosc] || "") : k === "dokument" ? (DOCS[r.dokument] || "")
+    : k === "przewoznik" ? ((carrier(r.przewoznik) || [])[1] || "") : k === "wiadomosci" ? (r.wiadomosci && Object.keys(r.wiadomosci).length ? JSON.stringify(r.wiadomosci) : "") : r[k];
+  const buildCSV = recs => "﻿" + [FIELDS.map(f => f[1]).join(";")].concat(recs.map(r => FIELDS.map(([k]) => csvCell(csvVal(r, k))).join(";"))).join("\r\n");
   $("export").onclick = async () => {
     const bm = $("backup-msg");
     if (!records.length) { bm.textContent = "Rejestr jest pusty — nie ma czego eksportować."; return; }
@@ -1799,6 +2062,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     return rows.filter(r => r.some(x => x.trim()));
   }
   const toISO = s => { s = String(s||"").trim(); let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); if (m) return m[0]; m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})/); return m ? `${m[3]}-${m[2].padStart(2,"0")}-${m[1].padStart(2,"0")}` : ""; };
+  const keyByLabel = (map, label) => Object.keys(map).find(k => map[k] === label || k === label) || "";
   $("import").onclick = () => guard("Wczytać naprawy z pliku?", () => $("import-file").click());
   function parseRecords(text){
     const rows = parseCSV(text); const head = rows.shift() || [];
@@ -1808,10 +2072,16 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     for (const r of rows) {
       const g = k => idx[k] >= 0 ? (r[idx[k]] || "").trim() : "";
       if (!g("kod")) continue;
+      const stl = g("status"), st = STATUSES.find(s => s[1] === stl || s[0] === stl);
+      let wiad = {}; try { wiad = g("wiadomosci") ? JSON.parse(g("wiadomosci")) : {}; } catch {}
+      const car = CARRIERS.find(c => c[1] === g("przewoznik") || c[0] === g("przewoznik"));
       out.push({ kod: g("kod"), klient: g("klient"), telefon: g("telefon"), urzadzenie: g("urzadzenie"),
         nrSeryjny: g("nrSeryjny").toUpperCase(), dataNaprawy: toISO(g("dataNaprawy")) || todayISO(),
         gwarancjaMies: Number(g("gwarancjaMies")) || 3, kwota: parseKwota(g("kwota")) || 0,
-        opis: g("opis"), utworzono: g("utworzono") || new Date().toISOString() });
+        opis: g("opis"), utworzono: g("utworzono") || new Date().toISOString(),
+        status: st ? st[0] : "wydane", akcesoria: g("akcesoria") ? g("akcesoria").split(/\s*,\s*/).filter(Boolean) : [],
+        usterka: g("usterka"), platnosc: keyByLabel(PAY, g("platnosc")), dokument: keyByLabel(DOCS, g("dokument")),
+        przewoznik: car ? car[0] : "", nrPrzesylki: g("nrPrzesylki"), wiadomosci: wiad });
     }
     return out;
   }
@@ -1826,34 +2096,52 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     } catch { bm.textContent = "Nie udało się wczytać pliku."; }
   };
 
-  // ---------- client message ----------
-  const DEFAULT_TPL = "Dzień dobry! Urządzenie {urzadzenie} (nr seryjny {nr_seryjny}) jest już naprawione i gotowe do odbioru. Koszt naprawy: {kwota}. Gwarancja ważna do {gwarancja_do}, kod gwarancji: {kod}.\nPozdrawiam, SleschGPS Biłgoraj";
+  // ---------- client messages ----------
+  const REVIEW_URL = "https://share.google/BQ6bItwWcq6KqG4D5";
+  const MSGS = [
+    ["przyjecie", "Potwierdzenie przyjęcia", "tpl-przyjecie", "Dzień dobry! Przyjęliśmy do naprawy {urzadzenie} (nr seryjny {nr_seryjny}). Pozostawione: {akcesoria}. Zgłoszona usterka: {usterka}. Numer zlecenia: {kod}. Damy znać, gdy naprawa będzie gotowa.\nPozdrawiam, SleschGPS Biłgoraj"],
+    ["gotowe", "Naprawa gotowa", "sms", "Dzień dobry! Urządzenie {urzadzenie} (nr seryjny {nr_seryjny}) jest już naprawione i gotowe do odbioru. Koszt naprawy: {kwota}. Gwarancja ważna do {gwarancja_do}, kod gwarancji: {kod}.\nPozdrawiam, SleschGPS Biłgoraj"],
+    ["przesylka", "Numer przesyłki", "tpl-przesylka", "Dzień dobry! Naprawione urządzenie {urzadzenie} zostało wysłane ({przewoznik}). Numer przesyłki: {nr_przesylki}. Śledzenie: {link_sledzenia}\nGwarancja ważna do {gwarancja_do}, kod gwarancji: {kod}.\nPozdrawiam, SleschGPS Biłgoraj"],
+    ["opinia", "Prośba o opinię", "tpl-opinia", "Dzień dobry! Dziękujemy za skorzystanie z serwisu SleschGPS. Będziemy wdzięczni za krótką opinię w Google: {link_opinii}\nPozdrawiam, SleschGPS Biłgoraj"]
+  ];
+  const tpls = Object.fromEntries(MSGS.map(m => [m[0], m[3]]));
   const VARS = [
     ["imie", "imię", r => (r.klient || "").trim().split(/\s+/)[0] || ""],
     ["klient", "imię i nazwisko", r => r.klient || ""],
     ["urzadzenie", "urządzenie", r => r.urzadzenie || "nawigacja"],
     ["nr_seryjny", "nr seryjny", r => r.nrSeryjny || ""],
+    ["akcesoria", "co zostawił", r => accText(r).toLowerCase()],
+    ["usterka", "usterka", r => r.usterka || "—"],
     ["kwota", "kwota", r => zl(r.kwota)],
     ["data", "data naprawy", r => fmtDate(r.dataNaprawy)],
     ["gwarancja_do", "koniec gwarancji", r => fmtDate(warrantyEnd(r))],
-    ["kod", "kod gwarancji", r => r.kod || ""]
+    ["kod", "kod zlecenia", r => r.kod || ""],
+    ["status", "status", r => stLabel(stOf(r)).toLowerCase()],
+    ["przewoznik", "przewoźnik", r => (carrier(r.przewoznik) || [0, "kurier"])[1]],
+    ["nr_przesylki", "nr przesyłki", r => r.nrPrzesylki || ""],
+    ["link_sledzenia", "link śledzenia", r => trackUrl(r) || r.nrPrzesylki || ""],
+    ["link_opinii", "link do opinii", () => REVIEW_URL]
   ];
-  let msgTpl = DEFAULT_TPL;
-  const fold = k => k.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/ł/g, "l").replace(/\s+/g, "_");
-  const fillMsg = r => msgTpl.replace(/\{([^{}]{1,30})\}/g, (m, k) => { const v = VARS.find(x => x[0] === fold(k)); return v ? v[2](r) : m; });
+  const fold = k => k.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/ł/g, "l").replace(/\s+/g, "_");
+  const fillTpl = (tpl, r) => tpl.replace(/\{([^{}]{1,30})\}/g, (m, k) => { const v = VARS.find(x => x[0] === fold(k)); return v ? v[2](r) : m; });
+  const fillMsg = (kind, r) => fillTpl(tpls[kind], r);
   function phoneIntl(t){
     let d = String(t || "").replace(/[^\d+]/g, "");
     if (d.startsWith("+")) d = d.slice(1); else if (d.startsWith("00")) d = d.slice(2); else if (d.length === 9) d = "48" + d;
     return d.replace(/\D/g, "");
   }
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
-  const smsHref = r => "sms:+" + phoneIntl(r.telefon) + (isIOS ? "&" : "?") + "body=" + encodeURIComponent(fillMsg(r));
-  const waHref = r => "https://wa.me/" + phoneIntl(r.telefon) + "?text=" + encodeURIComponent(fillMsg(r));
+  const smsHref = (kind, r) => "sms:+" + phoneIntl(r.telefon) + (isIOS ? "&" : "?") + "body=" + encodeURIComponent(fillMsg(kind, r));
+  const waHref = (kind, r) => "https://wa.me/" + phoneIntl(r.telefon) + "?text=" + encodeURIComponent(fillMsg(kind, r));
 
-  const SAMPLE = { kod: "SG-7K2M9QXA", klient: "Jan Kowalski", telefon: "600 123 456", urzadzenie: "TomTom GO 6250", nrSeryjny: "QE2193G01234", kwota: 250, dataNaprawy: todayISO(), gwarancjaMies: 3 };
-  function renderPreview(){
-    const saved = msgTpl; msgTpl = $("s-tpl").value; $("s-prev").textContent = fillMsg(SAMPLE) || "—"; msgTpl = saved;
-  }
+  // settings: message templates
+  let tplKind = "gotowe";
+  $("s-which").innerHTML = MSGS.map(m => `<option value="${m[0]}">${m[1]}</option>`).join("");
+  $("s-which").value = tplKind;
+  const SAMPLE = { kod: "SG-7K2M9QXA", klient: "Jan Kowalski", telefon: "600 123 456", urzadzenie: "TomTom GO 6250", nrSeryjny: "QE2193G01234", kwota: 250, dataNaprawy: todayISO(), gwarancjaMies: 3, akcesoria: ["Urządzenie", "Kabel", "Uchwyt"], usterka: "nie ładuje się", przewoznik: "inpost", nrPrzesylki: "520000011234567890123456", status: "gotowe" };
+  function renderPreview(){ $("s-prev").textContent = fillTpl($("s-tpl").value, SAMPLE) || "—"; }
+  function loadTplEditor(){ $("s-tpl").value = tpls[tplKind]; renderPreview(); $("s-msg").textContent = ""; }
+  $("s-which").onchange = () => { tplKind = $("s-which").value; loadTplEditor(); };
   $("s-chips").innerHTML = VARS.map(([k, label]) => `<button class="chip" type="button" data-k="${k}">{${k}}<span>${label}</span></button>`).join("");
   $("s-chips").addEventListener("click", e => {
     const b = e.target.closest(".chip"); if (!b) return;
@@ -1866,11 +2154,50 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     const v = $("s-tpl").value.trim();
     if (!v) { $("s-msg").textContent = "Wiadomość nie może być pusta."; return; }
     if (!store) { $("s-msg").textContent = "Zapis jest niedostępny w tym widoku."; return; }
-    try { await store.setSetting("sms", v); msgTpl = v; $("s-msg").textContent = "Zapisano. Nowa treść będzie w każdej wiadomości."; }
+    const m = MSGS.find(x => x[0] === tplKind);
+    try { await store.setSetting(m[2], v); tpls[tplKind] = v; $("s-msg").textContent = `Zapisano wiadomość „${m[1]}”.`; }
     catch { $("s-msg").textContent = "Nie udało się zapisać."; }
   };
-  $("s-reset").onclick = () => { $("s-tpl").value = DEFAULT_TPL; renderPreview(); $("s-msg").textContent = "Przywrócono domyślną — stuknij „Zapisz treść”."; };
-  $("s-tpl").value = msgTpl; renderPreview();
+  $("s-reset").onclick = () => { $("s-tpl").value = MSGS.find(x => x[0] === tplKind)[3]; renderPreview(); $("s-msg").textContent = "Przywrócono domyślną — stuknij „Zapisz treść”."; };
+  loadTplEditor();
+
+  // settings: price list
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+  function renderCennik(){
+    $("c-list").innerHTML = cennik.length ? cennik.map(c => `<div class="citem"><span class="nm">${esc(c.nazwa)}${c.urzadzenie ? `<small>${esc(c.urzadzenie)}</small>` : ""}</span><span class="pr">${zl(c.cena)}</span><button class="del" type="button" data-id="${esc(c.id)}" aria-label="Usuń z cennika">×</button></div>`).join("")
+      : `<div class="empty" style="padding:16px"><span>Cennik jest pusty. Dodaj pierwszą usługę poniżej.</span></div>`;
+    renderQuick();
+  }
+  async function saveCennik(){ try { await store.setSetting("cennik", JSON.stringify(cennik)); } catch { $("c-msg2").textContent = "Nie udało się zapisać cennika."; } }
+  $("c-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const n = $("c-name").value.trim(), p = parseKwota($("c-price").value);
+    if (!n) { $("c-msg2").textContent = "Wpisz nazwę usługi."; return; }
+    if (isNaN(p)) { $("c-msg2").textContent = "Wpisz cenę, np. 150."; return; }
+    cennik.push({ id: uid(), nazwa: n, urzadzenie: $("c-dev").value.trim(), cena: p });
+    await saveCennik(); $("c-form").reset(); $("c-msg2").textContent = "Dodano do cennika."; renderCennik();
+  });
+  $("c-list").addEventListener("click", async e => { const b = e.target.closest(".del"); if (!b) return; cennik = cennik.filter(c => c.id !== b.dataset.id); await saveCennik(); renderCennik(); });
+
+  // parts to order
+  let parts = [];
+  function renderParts(){
+    const open = parts.filter(p => !p.done).length;
+    $("parts-badge").hidden = !open; $("parts-badge").textContent = open;
+    $("p-clear").hidden = !parts.some(p => p.done);
+    $("p-list").innerHTML = parts.length ? parts.map(p => `<div class="pitem${p.done ? " done" : ""}"><input type="checkbox" data-id="${esc(p.id)}" ${p.done ? "checked" : ""} aria-label="Zamówione"><span class="nm">${esc(p.nazwa)}</span><span class="qty">${p.ilosc ? "× " + esc(p.ilosc) : ""}</span><button class="del" type="button" data-id="${esc(p.id)}" aria-label="Usuń">×</button></div>`).join("")
+      : `<div class="empty" style="padding:16px"><span>Lista jest pusta. Wpisz część, która się kończy.</span></div>`;
+  }
+  async function saveParts(){ try { await store.setSetting("czesci", JSON.stringify(parts)); } catch { $("p-msg").textContent = "Nie udało się zapisać listy."; } }
+  $("p-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const n = $("p-name").value.trim(); if (!n) { $("p-msg").textContent = "Wpisz nazwę części."; return; }
+    parts.unshift({ id: uid(), nazwa: n, ilosc: $("p-qty").value.trim(), done: false });
+    await saveParts(); $("p-form").reset(); $("p-msg").textContent = ""; renderParts(); $("p-name").focus();
+  });
+  $("p-list").addEventListener("change", async e => { const c = e.target.closest("input[type=checkbox]"); if (!c) return; const p = parts.find(x => x.id === c.dataset.id); if (p) { p.done = c.checked; await saveParts(); renderParts(); } });
+  $("p-list").addEventListener("click", async e => { const b = e.target.closest(".del"); if (!b) return; parts = parts.filter(p => p.id !== b.dataset.id); await saveParts(); renderParts(); });
+  $("p-clear").onclick = async () => { parts = parts.filter(p => !p.done); await saveParts(); renderParts(); };
 
   // ---------- security code ----------
   const EMERGENCY = "02d6994faa261cf4e9d48e6dc5a034055d980565ee26b766479f2c6a8c828709";
@@ -2075,37 +2402,130 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   document.addEventListener("keydown", e => { if (e.key !== "Escape") return; if (!$("lock").hidden) closeLock(); else if (!$("guide").hidden) $("guide").hidden = true; });
 
   // ---------- card ----------
-  function openCard(r){
+  const ICON_SMS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>';
+  const ICON_WA = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-1.8-1.8l.8-1-1-2z" stroke-width="1.4"/></svg>';
+  const SUGGEST = { przyjete: "przyjecie", gotowe: "gotowe", wydane: "opinia", wyslane: "przesylka" };
+  $("c-carrier").innerHTML = `<option value="">— przewoźnik —</option>` + CARRIERS.map(c => `<option value="${c[0]}">${c[1]}</option>`).join("");
+  const stampShort = iso => { const d = new Date(iso); const p = n => String(n).padStart(2, "0"); return `${p(d.getDate())}.${p(d.getMonth()+1)} ${p(d.getHours())}:${p(d.getMinutes())}`; };
+
+  function openCard(r, highlight){
+    const same = current && current.kod === r.kod && !$("sheet").hidden;
+    const scroll = same ? $("card").scrollTop : 0;
     current = r;
     $("c-code").textContent = r.kod;
-    const cv = $("c-qr"), ctx = cv.getContext("2d");
-    ctx.clearRect(0,0,cv.width,cv.height); drawQR(ctx, makeQR(qrText(r)), 0, 0, cv.width);
+    const st = stOf(r);
+    $("c-st").innerHTML = STATUSES.map(([k, l]) => `<button type="button" class="tg" data-st="${k}" aria-pressed="${st === k}">${l}</button>`).join("");
     const end = warrantyEnd(r);
-    $("c-status").innerHTML = `<span class="pill ${active(r) ? "ok" : "bad"}">${active(r) ? "Gwarancja ważna do " + fmtDate(end) : "Gwarancja wygasła " + fmtDate(end)}</span>`;
+    $("c-wty").innerHTML = ["gotowe", "wydane", "wyslane"].includes(st) ? `<span class="pill ${active(r) ? "ok" : "bad"}">${active(r) ? "Gwarancja ważna do " + fmtDate(end) : "Gwarancja wygasła " + fmtDate(end)}</span>` : "";
+    const hist = clientHistory(r.telefon, r.kod);
+    $("c-client").innerHTML = `<div style="font-weight:600;font-size:16px">${esc(r.klient)}</div>
+      <div><span class="mono">${esc(r.telefon)}</span> <button class="copy" id="c-copy" type="button">Kopiuj numer</button></div>
+      ${hist.length ? `<div class="fieldhint">Stały klient · ${hist.length} ${hist.length === 1 ? "inna naprawa" : few(hist.length) ? "inne naprawy" : "innych napraw"} · <button type="button" class="linkbtn" id="c-hist">Pokaż historię</button></div>` : ""}`;
+    const w = r.wiadomosci || {};
+    const hl = highlight === undefined ? null : highlight;
+    $("c-msgs").innerHTML = MSGS.map(([k, label]) => {
+      const off = k === "przesylka" && !r.nrPrzesylki;
+      const sent = w[k];
+      return `<div class="msgrow${off ? " off" : ""}${hl === k ? " pulse" : ""}" data-m="${k}">
+        <span class="t">${label}</span>
+        <button type="button" class="sent${sent ? " yes" : ""}" data-toggle="${k}" title="Stuknij, aby zmienić">${sent ? `✓ Wysłano${sent.via === "wa" ? " WhatsApp" : sent.via === "sms" ? " SMS" : ""} ${stampShort(sent.at)}` : "Nie wysłano"}</button>
+        ${off ? `<span class="fieldhint" style="grid-column:1/-1">Najpierw wpisz numer przesyłki poniżej.</span>` : `<div class="phoneacts">
+          <a class="act sms" href="${esc(smsHref(k, r))}" data-send="${k}" data-via="sms">${ICON_SMS}SMS</a>
+          <a class="act wa" href="${esc(waHref(k, r))}" target="_blank" rel="noopener" data-send="${k}" data-via="wa">${ICON_WA}WhatsApp</a>
+        </div>`}
+      </div>`;
+    }).join("");
+    if (!same) {
+      $("c-carrier").value = r.przewoznik || ""; $("c-trk").value = r.nrPrzesylki || ""; $("c-trk-msg").textContent = "";
+    }
+    const tu = trackUrl(r);
+    $("c-trk-link").hidden = !tu; if (tu) $("c-trk-link").href = tu;
+    $("c-trk-scan").hidden = !detector; $("c-trk-photo").hidden = !detector;
     $("c-dl").innerHTML = `
-      <dt>Klient</dt><dd>${esc(r.klient)}</dd>
-      <dt>Telefon</dt><dd><span class="mono">${esc(r.telefon)}</span>
-        <div class="phoneacts">
-          <a class="act sms" href="${esc(smsHref(r))}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>SMS</a>
-          <a class="act wa" href="${esc(waHref(r))}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 20l1.3-4A8 8 0 1 1 8 18.7z"/><path d="M9 9.5c0 3 2.5 5.5 5.5 5.5l1-1.5-2-1-1 .8a4 4 0 0 1-1.8-1.8l.8-1-1-2z" stroke-width="1.4"/></svg>WhatsApp</a>
-          <button class="act" id="c-copy" type="button">Kopiuj numer</button>
-        </div></dd>
       <dt>Urządzenie</dt><dd>${esc(r.urzadzenie || "—")}</dd>
       <dt>Nr seryjny</dt><dd class="mono">${esc(r.nrSeryjny)}</dd>
+      <dt>Zostawił</dt><dd>${esc(accText(r))}</dd>
+      <dt>Usterka</dt><dd>${esc(r.usterka || "—")}</dd>
+      <dt>Przyjęto</dt><dd class="mono">${r.utworzono ? stampShort(r.utworzono) : "—"}</dd>
       <dt>Data naprawy</dt><dd class="mono">${fmtDate(r.dataNaprawy)}</dd>
       <dt>Gwarancja</dt><dd>${r.gwarancjaMies} mies. · do <span class="mono">${fmtDate(end)}</span></dd>
       <dt>Kwota</dt><dd class="mono">${zl(r.kwota)}</dd>
       ${r.opis ? `<dt>Zakres</dt><dd>${esc(r.opis)}</dd>` : ""}`;
+    $("c-plat").value = r.platnosc || ""; $("c-dok").value = r.dokument || "";
     $("c-copy").onclick = () => { const p = navigator.clipboard?.writeText(r.telefon); if (p) p.then(() => setMsg("Skopiowano numer."), () => setMsg("Zaznacz numer i skopiuj ręcznie.")); else setMsg("Zaznacz numer i skopiuj ręcznie."); };
-    disarm(); setMsg("");
-    $("c-pdf").hidden = $("c-card").hidden = $("c-qrpng").hidden = !(store && store.canSave);
+    if ($("c-hist")) $("c-hist").onclick = () => { $("q").value = r.telefon; filterSt = "all"; closeCard(); show("list"); renderList(); };
+    const canSave = !!(store && store.canSave);
+    ["c-intake", "c-pdf", "c-card", "c-label", "c-qrpng"].forEach(id => $(id).hidden = !canSave);
+    if (!same) { disarm(); setMsg(""); }
+    renderPhotos(r.kod);
     $("sheet").hidden = false;
+    $("card").scrollTop = scroll;
+    if (hl && !same) setTimeout(() => { const el = $("c-msgs").querySelector(".pulse"); if (el) el.scrollIntoView({ block: "center", behavior: "smooth" }); }, 60);
   }
   const setMsg = t => { $("c-msg").textContent = t; };
+  async function updateCurrent(patch, highlight){
+    if (!current || !store) return;
+    const r = { ...current, ...patch };
+    try { await store.put(r); } catch { setMsg("Nie udało się zapisać zmiany."); return; }
+    openCard(r, highlight);
+  }
+  $("c-st").addEventListener("click", e => {
+    const b = e.target.closest(".tg"); if (!b || !current) return;
+    const st = b.dataset.st; if (st === stOf(current)) return;
+    updateCurrent({ status: st }, SUGGEST[st] || null);
+  });
+  $("c-msgs").addEventListener("click", e => {
+    const a = e.target.closest("a[data-send]");
+    if (a && current) { const w = { ...(current.wiadomosci || {}) }; w[a.dataset.send] = { via: a.dataset.via, at: new Date().toISOString() }; updateCurrent({ wiadomosci: w }); return; }
+    const t = e.target.closest("[data-toggle]");
+    if (t && current) { const w = { ...(current.wiadomosci || {}) }; const k = t.dataset.toggle; if (w[k]) delete w[k]; else w[k] = { via: "", at: new Date().toISOString() }; updateCurrent({ wiadomosci: w }); }
+  });
+  $("c-plat").onchange = () => updateCurrent({ platnosc: $("c-plat").value });
+  $("c-dok").onchange = () => updateCurrent({ dokument: $("c-dok").value });
+
+  // shipping
+  function guessCarrier(n){
+    if (/^\d{24}$/.test(n)) return "inpost";
+    if (/^[A-Z]{2}\d{9}[A-Z]{2}$/.test(n) || /^00\d{18}$/.test(n)) return "poczta";
+    if (/^\d{13}[A-Z]$/.test(n)) return "dpd";
+    if (/^1Z[0-9A-Z]{16}$/.test(n)) return "ups";
+    if (/^JJD\d+$/.test(n)) return "dhl";
+    return "";
+  }
+  function extractTracking(raw){
+    let t = String(raw || "").trim();
+    try { const u = new URL(t); for (const k of ["number", "p1", "NR1", "numer", "match", "tracknum", "tracking-id", "parcel"]) { const v = u.searchParams.get(k); if (v) return { nr: v.trim().toUpperCase(), car: guessCarrier(v.trim().toUpperCase()) }; } } catch {}
+    const up = t.toUpperCase();
+    const pats = [/\b\d{24}\b/, /\b[A-Z]{2}\d{9}[A-Z]{2}\b/, /\b00\d{18}\b/, /\b1Z[0-9A-Z]{16}\b/, /\b\d{13}[A-Z]\b/, /\bJJD\d{10,}\b/];
+    for (const p of pats) { const m = up.match(p); if (m) return { nr: m[0], car: guessCarrier(m[0]) }; }
+    const tokens = up.split(/[^A-Z0-9]+/).filter(x => x.length >= 8 && /\d/.test(x)).sort((a, b) => b.length - a.length);
+    const nr = tokens[0] || up.replace(/\s+/g, "");
+    return { nr, car: guessCarrier(nr) };
+  }
+  function applyTracking(raw){
+    const { nr, car } = extractTracking(raw);
+    if (!nr) { $("c-trk-msg").textContent = "Nie rozpoznano numeru przesyłki."; return; }
+    $("c-trk").value = nr; if (car) $("c-carrier").value = car;
+    $("c-trk-msg").textContent = `Odczytano numer ${nr}${car ? " (" + carrier(car)[1] + ")" : ""}. Sprawdź i stuknij „Zapisz przesyłkę”.`;
+    try { navigator.vibrate?.(80); } catch {}
+  }
+  $("c-trk").addEventListener("change", () => { const n = $("c-trk").value.trim().toUpperCase(); const c = guessCarrier(n); if (c && !$("c-carrier").value) $("c-carrier").value = c; });
+  $("c-trk-save").onclick = () => {
+    const nr = $("c-trk").value.trim().toUpperCase().replace(/\s+/g, ""), car = $("c-carrier").value;
+    if (!nr) { updateCurrent({ nrPrzesylki: "", przewoznik: car }); $("c-trk-msg").textContent = "Usunięto numer przesyłki."; return; }
+    if (!car) { $("c-trk-msg").textContent = "Wybierz przewoźnika."; return; }
+    const patch = { nrPrzesylki: nr, przewoznik: car };
+    if (!["wydane", "wyslane"].includes(stOf(current))) patch.status = "wyslane";
+    $("c-trk-msg").textContent = "Zapisano przesyłkę" + (patch.status ? " i zmieniono status na „Wysłane”." : ".");
+    updateCurrent(patch, "przesylka");
+  };
+  $("c-trk-scan").onclick = () => startScan(applyTracking, $("c-trk-msg"));
+  $("c-trk-photo").onclick = () => pickImage(applyTracking, $("c-trk-msg"));
+
   function closeCard(){ $("sheet").hidden = true; current = null; }
   $("c-close").onclick = closeCard;
   $("sheet").addEventListener("click", e => { if (e.target.id === "sheet") closeCard(); });
-  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("sheet").hidden && $("lock").hidden) closeCard(); });
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("sheet").hidden && $("lock").hidden && $("viewer").hidden && $("scanner").hidden) closeCard(); });
 
   $("c-edit").onclick = () => { const r = current; if (r) guard("Edytować naprawę " + r.kod + "?", () => startEdit(r)); };
   function startEdit(r){
@@ -2113,25 +2533,85 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     $("f-klient").value = r.klient; $("f-tel").value = r.telefon; $("f-data").value = r.dataNaprawy;
     $("f-urz").value = r.urzadzenie || ""; $("f-sn").value = r.nrSeryjny;
     $("f-kwota").value = String(r.kwota).replace(".", ","); $("f-gw").value = String(r.gwarancjaMies); $("f-opis").value = r.opis || "";
+    setAcc(r.akcesoria || []); $("f-usterka").value = r.usterka || ""; $("f-plat").value = r.platnosc || ""; $("f-dok").value = r.dokument || "";
     $("form-title").textContent = "Edycja naprawy " + r.kod; $("save").textContent = "Zapisz zmiany"; $("cancel-edit").hidden = false;
-    $("form-msg").textContent = ""; closeCard(); show("new"); $("f-klient").focus();
+    $("form-msg").textContent = ""; closeCard(); show("new"); renderTelHint(); $("f-klient").focus();
   }
 
   let armTimer = null;
-  function disarm(){ clearTimeout(armTimer); const b = $("c-del"); b.classList.remove("armed"); b.textContent = "Usuń"; b.dataset.armed = ""; }
+  function disarm(){ clearTimeout(armTimer); const b = $("c-del"); b.classList.remove("armed"); b.textContent = "Usuń naprawę"; b.dataset.armed = ""; }
   async function doDelete(r){
-    try { await store.del(r.kod); closeCard(); } catch { setMsg("Nie udało się usunąć."); }
+    try { await store.del(r.kod); await photosDeleteAll(r.kod); closeCard(); } catch { setMsg("Nie udało się usunąć."); }
   }
   $("c-del").onclick = async () => {
     const b = $("c-del");
     if (pinHash && current) { const r = current; guard("Usunąć naprawę " + r.kod + "?", () => doDelete(r), "Usuń naprawę"); return; }
     if (!b.dataset.armed) { b.dataset.armed = "1"; b.classList.add("armed"); b.textContent = "Na pewno usunąć?"; armTimer = setTimeout(disarm, 4000); return; }
-    disarm(); if (!current || !store) return;
-    try { await store.del(current.kod); closeCard(); } catch { setMsg("Nie udało się usunąć."); }
+    disarm(); if (current) doDelete(current);
   };
 
+  // ---------- photos (IndexedDB, this device only) ----------
+  let idb = null;
+  function openIDB(){
+    if (idb) return idb;
+    idb = new Promise((res, rej) => {
+      try {
+        const q = indexedDB.open("sleschgps-zdjecia", 1);
+        q.onupgradeneeded = () => { const os = q.result.createObjectStore("zdjecia", { keyPath: "id" }); os.createIndex("kod", "kod"); };
+        q.onsuccess = () => res(q.result); q.onerror = () => rej(q.error);
+      } catch (e) { rej(e); }
+    });
+    return idb;
+  }
+  const tx = async (mode, fn) => { const db = await openIDB(); return new Promise((res, rej) => { const t = db.transaction("zdjecia", mode); const out = fn(t.objectStore("zdjecia")); t.oncomplete = () => res(out && out.result !== undefined ? out.result : out); t.onerror = () => rej(t.error); }); };
+  const photosOf = kod => tx("readonly", os => os.index("kod").getAll(kod));
+  const photoPut = p => tx("readwrite", os => os.put(p));
+  const photoDel = id => tx("readwrite", os => os.delete(id));
+  async function photosDeleteAll(kod){ try { const list = await photosOf(kod); for (const p of list) await photoDel(p.id); } catch {} }
+  async function compress(file){
+    const bmp = await createImageBitmap(file);
+    const k = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    const c = document.createElement("canvas"); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k);
+    c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+    return await new Promise(r => c.toBlob(r, "image/jpeg", 0.72));
+  }
+  let photoUrls = [], photoStage = "przyjecie", viewing = null;
+  async function renderPhotos(kod){
+    photoUrls.forEach(u => URL.revokeObjectURL(u)); photoUrls = [];
+    let list = [];
+    try { list = await photosOf(kod); } catch { $("ph-msg").textContent = "Zdjęcia nie działają w tej przeglądarce."; }
+    if (!current || current.kod !== kod) return;
+    for (const stage of ["przyjecie", "po"]) {
+      const items = list.filter(p => p.etap === stage).sort((a, b) => a.at.localeCompare(b.at));
+      $("ph-" + stage).innerHTML = items.map(p => { const u = URL.createObjectURL(p.blob); photoUrls.push(u); return `<button class="ph" type="button" data-id="${p.id}"><img src="${u}" alt="Zdjęcie ${stage === "po" ? "po naprawie" : "przy przyjęciu"}"></button>`; }).join("")
+        + `<button class="add" type="button" data-add="${stage}">+ Dodaj zdjęcie</button>`;
+    }
+  }
+  ["ph-przyjecie", "ph-po"].forEach(id => $(id).addEventListener("click", async e => {
+    const add = e.target.closest("[data-add]");
+    if (add) { photoStage = add.dataset.add; $("photo-in").click(); return; }
+    const ph = e.target.closest(".ph"); if (!ph || !current) return;
+    const list = await photosOf(current.kod); const p = list.find(x => x.id === ph.dataset.id); if (!p) return;
+    viewing = p; const u = URL.createObjectURL(p.blob); $("viewer-img").src = u; $("viewer").hidden = false;
+  }));
+  $("photo-in").onchange = async e => {
+    const files = [...e.target.files]; e.target.value = ""; if (!files.length || !current) return;
+    const kod = current.kod; $("ph-msg").textContent = "Zapisuję zdjęcia…";
+    try {
+      for (const f of files) await photoPut({ id: uid(), kod, etap: photoStage, at: new Date().toISOString(), blob: await compress(f) });
+      $("ph-msg").textContent = files.length === 1 ? "Dodano zdjęcie." : `Dodano ${files.length} zdjęcia.`;
+    } catch { $("ph-msg").textContent = "Nie udało się zapisać zdjęcia (brak miejsca w przeglądarce?)."; }
+    renderPhotos(kod);
+  };
+  const closeViewer = () => { $("viewer").hidden = true; if ($("viewer-img").src) URL.revokeObjectURL($("viewer-img").src); $("viewer-img").removeAttribute("src"); viewing = null; };
+  $("viewer-close").onclick = closeViewer;
+  $("viewer-del").onclick = () => {
+    const p = viewing; if (!p) return;
+    guard("Usunąć to zdjęcie?", async () => { await photoDel(p.id); closeViewer(); $("ph-msg").textContent = "Usunięto zdjęcie."; if (current) renderPhotos(current.kod); }, "Usuń zdjęcie");
+  };
+  document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("viewer").hidden && $("lock").hidden) closeViewer(); });
+
   // ---------- card export: PNG + PDF ----------
-  const REVIEW_URL = "https://share.google/BQ6bItwWcq6KqG4D5";
   async function saveBlob(blob, filename){
     try { setMsg(await store.saveFile(filename, blob)); } catch { setMsg("Nie udało się zapisać pliku."); }
   }
@@ -2183,20 +2663,90 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     x.fillStyle = "#5a6878"; x.font = "400 28px 'IBM Plex Sans', sans-serif"; x.fillText("Dziękujemy za zaufanie!", tx, top+252);
     return c;
   }
-  // A4 page with the A6 card at true size in the top-left corner and a thin cut line
-  function makePDF(jpeg, pxW, pxH){
-    const mm = v => v * 72 / 25.4, pw = 595.28, ph = 841.89;
-    const cw = mm(105), ch = mm(148), cx = mm(10), cy = ph - mm(10) - ch;
+  function header(x, W){
+    x.fillStyle = "#ffffff"; x.fillRect(0, 0, W, 9999);
+    x.fillStyle = "#0b6e7a"; x.fillRect(0, 0, W, 210);
+    x.fillStyle = "#ffffff";
+    x.beginPath(); x.moveTo(125,52); x.lineTo(170,158); x.lineTo(125,134); x.lineTo(80,158); x.closePath(); x.fill();
+    x.font = "700 74px 'Barlow Semi Condensed', 'Arial Narrow', sans-serif"; x.fillText("SleschGPS", 200, 122);
+    x.font = "500 34px 'IBM Plex Sans', sans-serif"; x.fillText("Serwis nawigacji · Biłgoraj", 202, 170);
+  }
+  function wrapLines(x, text, maxW, maxLines){
+    const words = String(text || "—").split(/\s+/), lines = []; let line = "";
+    for (const w of words) { const t = line ? line + " " + w : w; if (x.measureText(t).width > maxW && line) { lines.push(line); line = w; } else line = t; }
+    if (line) lines.push(line);
+    if (lines.length > maxLines) { lines.length = maxLines; lines[maxLines - 1] = lines[maxLines - 1].replace(/\s*\S*$/, "") + " …"; }
+    return lines;
+  }
+  // A6 intake confirmation
+  async function drawIntake(r){
+    try { await document.fonts.ready; } catch {}
+    const W = 1240, H = 1748, M = 80, c = document.createElement("canvas"); c.width = W; c.height = H;
+    const x = c.getContext("2d"); header(x, W);
+    x.fillStyle = "#5a6878"; x.font = "600 30px 'IBM Plex Sans', sans-serif"; x.fillText("POTWIERDZENIE PRZYJĘCIA DO NAPRAWY", M, 290);
+    x.fillStyle = "#c25e0c"; x.font = "600 66px 'IBM Plex Mono', monospace"; x.fillText(r.kod, M, 372);
+    x.fillStyle = "#5a6878"; x.font = "400 28px 'IBM Plex Sans', sans-serif"; x.fillText("Numer zlecenia — podaj go przy odbiorze", M, 418);
+    drawQR(x, makeQR("SleschGPS - PRZYJĘCIE\nKod: " + r.kod), W - M - 230, 250, 230);
+    const rows = [
+      ["Klient", r.klient, 1], ["Telefon", r.telefon, 1], ["Urządzenie", r.urzadzenie || "—", 1], ["Nr seryjny", r.nrSeryjny, 1],
+      ["Data przyjęcia", r.utworzono ? stampShort(r.utworzono).replace(/^(\d\d\.\d\d)/, "$1." + new Date(r.utworzono).getFullYear()) : fmtDate(todayISO()), 1],
+      ["Pozostawione", accText(r), 2], ["Usterka", r.usterka || "—", 3]
+    ];
+    if (Number(r.kwota) > 0) rows.push(["Kwota (wstępnie)", zl(r.kwota), 1]);
+    let y = 520;
+    x.strokeStyle = "#d5dbe2"; x.lineWidth = 2;
+    for (const [k, v, max] of rows) {
+      x.beginPath(); x.moveTo(M, y - 46); x.lineTo(W - M, y - 46); x.stroke();
+      x.fillStyle = "#5a6878"; x.font = "500 32px 'IBM Plex Sans', sans-serif"; x.fillText(k, M, y);
+      x.fillStyle = "#16202b"; x.font = "600 34px 'IBM Plex Sans', sans-serif";
+      const lines = wrapLines(x, v, 700, max);
+      x.textAlign = "right"; lines.forEach((l, i) => x.fillText(l, W - M, y + i * 44)); x.textAlign = "left";
+      y += 64 + (lines.length - 1) * 44;
+    }
+    const sy = H - 250;
+    x.strokeStyle = "#16202b"; x.lineWidth = 2;
+    x.beginPath(); x.moveTo(M, sy); x.lineTo(M + 470, sy); x.moveTo(W - M - 470, sy); x.lineTo(W - M, sy); x.stroke();
+    x.fillStyle = "#5a6878"; x.font = "400 26px 'IBM Plex Sans', sans-serif";
+    x.fillText("Podpis klienta", M, sy + 38); x.textAlign = "right"; x.fillText("Podpis serwisu", W - M, sy + 38); x.textAlign = "left";
+    x.fillStyle = "#e8f3f4"; x.fillRect(0, H - 130, W, 130);
+    x.fillStyle = "#16202b"; x.font = "500 27px 'IBM Plex Sans', sans-serif";
+    x.fillText("Odbiór urządzenia za okazaniem tego potwierdzenia lub numeru zlecenia.", M, H - 76);
+    x.fillStyle = "#5a6878"; x.font = "400 25px 'IBM Plex Sans', sans-serif"; x.fillText("O zakończeniu naprawy poinformujemy SMS-em.", M, H - 36);
+    return c;
+  }
+  // 50 × 30 mm sticker
+  async function drawLabel(r){
+    try { await document.fonts.ready; } catch {}
+    const W = 591, H = 354, c = document.createElement("canvas"); c.width = W; c.height = H;
+    const x = c.getContext("2d");
+    x.fillStyle = "#fff"; x.fillRect(0, 0, W, H);
+    drawQR(x, makeQR(r.kod), 6, 12, 330);
+    const tx = 336, mw = W - tx - 12;
+    const fit = (t, font) => { x.font = font; let s = String(t || ""); while (x.measureText(s).width > mw && s.length > 2) s = s.slice(0, -2) + "…"; return s; };
+    x.fillStyle = "#000";
+    x.fillText(fit("SleschGPS", "700 30px 'Barlow Semi Condensed', 'Arial Narrow', sans-serif"), tx, 50);
+    x.fillText(fit(r.kod, "700 34px 'IBM Plex Mono', monospace"), tx, 108);
+    x.fillText(fit(r.klient, "600 30px 'IBM Plex Sans', sans-serif"), tx, 170);
+    x.fillText(fit(r.urzadzenie || "", "400 27px 'IBM Plex Sans', sans-serif"), tx, 220);
+    x.fillText(fit(r.utworzono ? stampShort(r.utworzono).slice(0, 5) + "." + new Date(r.utworzono).getFullYear() : "", "400 26px 'IBM Plex Sans', sans-serif"), tx, 268);
+    x.fillText(fit(accText(r) === "—" ? "" : accText(r), "400 22px 'IBM Plex Sans', sans-serif"), tx, 312);
+    return c;
+  }
+  // PDF with one JPEG image. place: {pw, ph, x, y, w, h, cut} in mm
+  function makePDF(jpeg, pxW, pxH, place){
+    const P = place || { pw: 210, ph: 297, x: 10, y: 10, w: 105, h: 148, cut: true };
+    const mm = v => v * 72 / 25.4, pw = mm(P.pw), ph = mm(P.ph);
+    const cw = mm(P.w), ch = mm(P.h), cx = mm(P.x), cy = ph - mm(P.y) - ch;
     const f = n => n.toFixed(2);
-    const content = `q ${f(cw)} 0 0 ${f(ch)} ${f(cx)} ${f(cy)} cm /Im1 Do Q\n0.6 G 0.4 w [3 3] 0 d ${f(cx)} ${f(cy)} ${f(cw)} ${f(ch)} re S\n`;
+    const content = `q ${f(cw)} 0 0 ${f(ch)} ${f(cx)} ${f(cy)} cm /Im1 Do Q\n` + (P.cut ? `0.6 G 0.4 w [3 3] 0 d ${f(cx)} ${f(cy)} ${f(cw)} ${f(ch)} re S\n` : "");
     const enc = s => new TextEncoder().encode(s);
     const parts = [], offs = []; let len = 0;
     const push = p => { const u = typeof p === "string" ? enc(p) : p; parts.push(u); len += u.length; };
-    push("%PDF-1.4\n%\xE2\xE3\xCF\xD3\n".replace(/[\xE2\xE3\xCF\xD3]/g, "x"));
+    push("%PDF-1.4\n%xxxx\n");
     const obj = (n, body) => { offs[n] = len; push(`${n} 0 obj\n`); body.forEach(push); push("\nendobj\n"); };
     obj(1, ["<< /Type /Catalog /Pages 2 0 R >>"]);
     obj(2, ["<< /Type /Pages /Kids [3 0 R] /Count 1 >>"]);
-    obj(3, [`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${pw} ${ph}] /Resources << /XObject << /Im1 4 0 R >> >> /Contents 5 0 R >>`]);
+    obj(3, [`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${f(pw)} ${f(ph)}] /Resources << /XObject << /Im1 4 0 R >> >> /Contents 5 0 R >>`]);
     obj(4, [`<< /Type /XObject /Subtype /Image /Width ${pxW} /Height ${pxH} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${jpeg.length} >>\nstream\n`, jpeg, "\nendstream"]);
     obj(5, [`<< /Length ${enc(content).length} >>\nstream\n${content}endstream`]);
     const xref = len;
@@ -2204,11 +2754,21 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     push(`trailer\n<< /Size 6 /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
     return new Blob(parts, { type: "application/pdf" });
   }
+  const toJpeg = async c => new Uint8Array(await (await canvasBlob(c, "image/jpeg", 0.95)).arrayBuffer());
   $("c-pdf").onclick = async () => {
     const r = current; if (!r) return;
     const c = await drawCard(r);
-    const jpeg = new Uint8Array(await (await canvasBlob(c, "image/jpeg", 0.95)).arrayBuffer());
-    saveBlob(makePDF(jpeg, c.width, c.height), `Gwarancja-${r.kod}.pdf`);
+    saveBlob(makePDF(await toJpeg(c), c.width, c.height), `Gwarancja-${r.kod}.pdf`);
+  };
+  $("c-intake").onclick = async () => {
+    const r = current; if (!r) return;
+    const c = await drawIntake(r);
+    saveBlob(makePDF(await toJpeg(c), c.width, c.height), `Przyjecie-${r.kod}.pdf`);
+  };
+  $("c-label").onclick = async () => {
+    const r = current; if (!r) return;
+    const c = await drawLabel(r);
+    saveBlob(makePDF(await toJpeg(c), c.width, c.height, { pw: 50, ph: 30, x: 0, y: 0, w: 50, h: 30, cut: false }), `Naklejka-${r.kod}.pdf`);
   };
   $("c-card").onclick = async () => {
     const r = current; if (!r) return;
@@ -2221,24 +2781,17 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     saveBlob(await canvasBlob(c, "image/png"), `QR-${r.kod}.png`);
   };
 
-  // ---------- serial number scanner ----------
-  let detector = null, stream = null, scanning = false;
+  // ---------- code scanner (camera + photo) ----------
+  let detector = null, stream = null, scanning = false, scanCb = null, scanMsgEl = null, imgCb = null, imgMsgEl = null;
   async function initScanner(){
     if (!("BarcodeDetector" in window)) return;
     try {
       const formats = await BarcodeDetector.getSupportedFormats();
       if (!formats.length) return;
       detector = new BarcodeDetector({ formats });
-      $("scan").hidden = false;
+      $("scan").hidden = false; $("q-scan").hidden = false;
+      if (current) openCard(current);
     } catch {}
-  }
-  function useCode(raw){
-    let v = String(raw || "").trim();
-    const m = v.match(/(?:^|[\s;,|])(?:S\/?N|SN|SERIAL(?:\s*NO)?|NR\s*SER\w*)\s*[:=#]?\s*([A-Z0-9-]{5,})/i);
-    if (m) v = m[1]; else if (v.includes("\n")) v = (v.split(/\r?\n/).find(l => l.trim()) || v).trim();
-    $("f-sn").value = v.toUpperCase();
-    $("scan-msg").textContent = "Zeskanowano: " + v.toUpperCase();
-    try { navigator.vibrate?.(80); } catch {}
   }
   function stopScan(){
     scanning = false;
@@ -2250,18 +2803,19 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     if (!scanning) return;
     const v = $("scan-video");
     if (v.readyState >= 2) {
-      try { const r = await detector.detect(v); if (r.length && scanning) { stopScan(); useCode(r[0].rawValue); return; } } catch {}
+      try { const r = await detector.detect(v); if (r.length && scanning) { stopScan(); scanCb && scanCb(r[0].rawValue); return; } } catch {}
     }
     setTimeout(loop, 120);
   }
-  $("scan").onclick = async () => {
-    $("scan-msg").textContent = "";
-    if (!navigator.mediaDevices?.getUserMedia) { $("scan-photo").click(); return; }
+  async function startScan(cb, msgEl){
+    scanCb = cb; scanMsgEl = msgEl; if (msgEl) msgEl.textContent = "";
+    if (!detector) return;
+    if (!navigator.mediaDevices?.getUserMedia) { pickImage(cb, msgEl); return; }
     try {
       stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
     } catch (e) {
-      if (e && e.name === "NotAllowedError") $("scan-msg").textContent = "Brak dostępu do aparatu. Możesz zrobić zdjęcie kodu.";
-      $("scan-photo").click(); return;
+      if (msgEl) msgEl.textContent = e && e.name === "NotAllowedError" ? "Brak dostępu do aparatu. Wybierz zdjęcie z kodem." : "Nie udało się włączyć aparatu. Wybierz zdjęcie z kodem.";
+      pickImage(cb, msgEl); return;
     }
     const v = $("scan-video"); v.srcObject = stream; $("scanner").hidden = false; scanning = true;
     try { await v.play(); } catch {}
@@ -2270,17 +2824,51 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     $("scan-torch").hidden = !(track.getCapabilities && track.getCapabilities().torch);
     $("scan-torch").onclick = () => { torch = !torch; track.applyConstraints({ advanced: [{ torch }] }).catch(() => {}); };
     loop();
+  }
+  function pickImage(cb, msgEl){ imgCb = cb; imgMsgEl = msgEl; $("gallery-in").click(); }
+  async function readImage(file){
+    const bmp = await createImageBitmap(file);
+    let r = await detector.detect(bmp);
+    if (!r.length) { // retry on a downscaled copy (large photos)
+      const k = 1600 / Math.max(bmp.width, bmp.height);
+      if (k < 1) { const c = document.createElement("canvas"); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k); c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height); r = await detector.detect(c); }
+    }
+    return r;
+  }
+  $("gallery-in").onchange = async e => {
+    const f = e.target.files[0]; e.target.value = ""; if (!f || !detector || !imgCb) return;
+    try {
+      const r = await readImage(f);
+      if (r.length) {
+        const qr = r.find(x => x.format === "qr_code"), best = qr || r.sort((a, b) => String(b.rawValue).length - String(a.rawValue).length)[0];
+        imgCb(best.rawValue);
+      } else if (imgMsgEl) imgMsgEl.textContent = "Nie znaleziono kodu na zdjęciu. Spróbuj zdjęcia z bliska i przy dobrym świetle.";
+    } catch { if (imgMsgEl) imgMsgEl.textContent = "Nie udało się odczytać zdjęcia."; }
   };
   $("scan-cancel").onclick = stopScan;
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("scanner").hidden) stopScan(); });
   document.addEventListener("visibilitychange", () => { if (document.hidden && scanning) stopScan(); });
-  $("scan-photo").onchange = async e => {
-    const f = e.target.files[0]; e.target.value = ""; if (!f || !detector) return;
-    try {
-      const bmp = await createImageBitmap(f); const r = await detector.detect(bmp);
-      if (r.length) useCode(r[0].rawValue); else $("scan-msg").textContent = "Nie znaleziono kodu na zdjęciu. Spróbuj z bliska i przy dobrym świetle.";
-    } catch { $("scan-msg").textContent = "Nie udało się odczytać zdjęcia."; }
-  };
+
+  // serial number
+  function useSerial(raw){
+    let v = String(raw || "").trim();
+    const m = v.match(/(?:^|[\s;,|])(?:S\/?N|SN|SERIAL(?:\s*NO)?|NR\s*SER\w*)\s*[:=#]?\s*([A-Z0-9-]{5,})/i);
+    if (m) v = m[1]; else if (v.includes("\n")) v = (v.split(/\r?\n/).find(l => l.trim()) || v).trim();
+    $("f-sn").value = v.toUpperCase();
+    $("scan-msg").textContent = "Zeskanowano: " + v.toUpperCase();
+    try { navigator.vibrate?.(80); } catch {}
+  }
+  $("scan").onclick = () => startScan(useSerial, $("scan-msg"));
+
+  // warranty / job lookup in register
+  function lookupCode(raw){
+    const t = String(raw || "").toUpperCase(), m = t.match(/SG-[A-Z0-9]{8}/);
+    const r = m && records.find(x => x.kod === m[0]);
+    if (r) { $("q-msg").textContent = ""; openCard(r); try { navigator.vibrate?.(80); } catch {} return; }
+    $("q").value = m ? m[0] : t.trim().slice(0, 40); renderList();
+    $("q-msg").textContent = m ? `Nie ma w rejestrze naprawy ${m[0]}.` : "To nie jest kod z karty SleschGPS — wpisałem odczytany tekst w wyszukiwarkę.";
+  }
+  $("q-scan").onclick = () => startScan(lookupCode, $("q-msg"));
   initScanner();
 
   // ---------- start ----------
@@ -2292,10 +2880,14 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
       const why = MODE === "local" ? "Ta przeglądarka nie pozwala zapisywać danych (tryb prywatny?)." : "Rejestr jest dostępny tylko po zalogowaniu na koncie właściciela.";
       lm.textContent = why; $("form-msg").textContent = why; $("save").disabled = true;
       $("export").disabled = $("import").disabled = true;
-      ["pin-set","cloud-connect","s-save"].forEach(id => $(id).disabled = true); return;
+      ["pin-set","cloud-connect","s-save"].forEach(id => $(id).disabled = true); renderCennik(); renderParts(); return;
     }
     $("backup-msg").textContent = store.backupNote;
-    try { const t = await store.getSetting("sms"); if (t) { msgTpl = t; $("s-tpl").value = t; renderPreview(); } } catch {}
+    for (const m of MSGS) { try { const t = await store.getSetting(m[2]); if (t) tpls[m[0]] = t; } catch {} }
+    loadTplEditor();
+    try { cennik = JSON.parse((await store.getSetting("cennik")) || "[]"); } catch { cennik = []; }
+    try { parts = JSON.parse((await store.getSetting("czesci")) || "[]"); } catch { parts = []; }
+    renderCennik(); renderParts();
     if (MODE !== "local") lm.textContent = "Wczytuję naprawy…";
     try { pinHash = (await store.getSetting("pin")) || null; } catch {}
     renderPin();
@@ -2308,6 +2900,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     let first = true, lastCsv = null;
     store.subscribe(a => {
       records = a; renderList();
+      if (current && !$("sheet").hidden) { const fresh = a.find(x => x.kod === current.kod); if (fresh && JSON.stringify(fresh) !== JSON.stringify(current)) openCard(fresh); }
       const csv = buildCSV(a);
       if (first) {
         first = false; lastCsv = csv;
