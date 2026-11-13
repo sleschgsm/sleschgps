@@ -211,6 +211,13 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .sent{font:600 12px var(--f-body);padding:4px 10px;border-radius:99px;border:1px dashed var(--muted);background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap}
 .sent.yes{border-style:solid;border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
 .trk{display:flex;gap:8px;flex-wrap:wrap}
+.pk{display:inline-flex;align-items:center;gap:6px;font:600 13px var(--f-body);padding:6px 12px;border-radius:99px}
+.pk-delivered{background:var(--ok-bg);color:var(--ok)}
+.pk-ready{background:var(--info-bg);color:var(--info)}
+.pk-transit,.pk-returned{background:var(--surface-2);color:var(--muted)}
+.pk-returned{color:var(--bad)}
+.row .pkline{grid-column:2;justify-self:end;font:600 11px var(--f-body);letter-spacing:.04em;text-transform:uppercase;color:var(--ok)}
+.row .pkline.ready{color:var(--info)}
 .trk select{flex:1 1 140px;min-width:0}
 .trk input{flex:2 1 180px;min-width:0;font-family:var(--f-mono)}
 .photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px}
@@ -264,7 +271,7 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 
   <form class="panel" id="form" autocomplete="off">
     <h2 id="form-title">Nowa naprawa</h2>
-    <div class="quick" id="f-quick" hidden><div class="eyebrow">Szybki wybór z cennika</div><div class="toggles" id="f-cennik"></div></div>
+    <label id="f-quick" hidden>Wybierz z cennika (opcjonalnie)<select id="f-cennik"></select></label>
     <div class="grid">
       <label class="full">Imię i nazwisko klienta<input id="f-klient" required placeholder="np. Jan Kowalski"></label>
       <label>Telefon<input id="f-tel" type="tel" inputmode="tel" required placeholder="np. 600 123 456"><span class="fieldhint client" id="f-tel-hint" hidden></span></label>
@@ -429,7 +436,7 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
       <pre class="codeblock" id="guide-code"></pre>
       <span class="msg" id="guide-msg"></span>
     </div>
-    <p class="note"><b>Drugi komputer lub telefon:</b> otwórz adres aplikacji, wejdź w ⚙ → Kopia w chmurze, wklej ten sam adres /exec i stuknij <b>Pobierz z chmury</b>. Program zapyta o kod zabezpieczający (lub hasło awaryjne) i wczyta najnowszą kopię. Pracuj zawsze na jednym urządzeniu naraz — gdy na Dysku jest nowsza kopia z innego urządzenia, program pokaże czerwony pasek i wstrzyma wysyłanie, dopóki jej nie pobierzesz.<br><br><b>Masz już wdrożoną starszą wersję skryptu?</b> Podmień w edytorze cały tekst na nowy skrypt, zapisz, potem <b>Wdróż → Zarządzaj wdrożeniami</b> → ikona ołówka → Wersja: <b>Nowa wersja</b> → <b>Wdróż</b>. Adres /exec się nie zmienia.</p>
+    <p class="note"><b>Drugi komputer lub telefon:</b> otwórz adres aplikacji, wejdź w ⚙ → Kopia w chmurze, wklej ten sam adres /exec i stuknij <b>Pobierz z chmury</b>. Program zapyta o kod zabezpieczający (lub hasło awaryjne) i wczyta najnowszą kopię. Pracuj zawsze na jednym urządzeniu naraz — gdy na Dysku jest nowsza kopia z innego urządzenia, program pokaże czerwony pasek i wstrzyma wysyłanie, dopóki jej nie pobierzesz.<br><br><b>Masz już wdrożoną starszą wersję skryptu?</b> Podmień w edytorze cały tekst na nowy skrypt, zapisz, potem <b>Wdróż → Zarządzaj wdrożeniami</b> → ikona ołówka → Wersja: <b>Nowa wersja</b> → <b>Wdróż</b>. Jeśli Google poprosi o zgodę („łączenie z usługą zewnętrzną” — to sprawdzanie paczek InPost), kliknij <b>Autoryzuj dostęp</b> → Zaawansowane → Zezwól. Adres /exec się nie zmienia.</p>
     <p class="note"><b>Gdzie są kopie?</b> Na Dysku Google w folderze <b>SleschGPS kopie zapasowe</b>. Plik <b>SleschGPS-rejestr-AKTUALNY.csv</b> to zawsze najnowszy stan, a pliki z datą to kopie z każdego dnia (ostatnie 60 dni).<br><br><b>Odtwarzanie:</b> pobierz plik z Dysku na telefon, potem Rejestr napraw → <b>Wczytaj z pliku</b>.</p>
   </div>
 </div>
@@ -442,6 +449,7 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
     </div>
     <div class="sec" style="border-top:0;padding-top:0">
       <div class="stchips" id="c-st"></div>
+      <div id="c-pk"></div>
       <div id="c-wty"></div>
     </div>
     <div class="sec">
@@ -1774,7 +1782,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   const $ = id => document.getElementById(id);
   const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   const FIELDS = [["kod","Kod gwarancji"],["klient","Klient"],["telefon","Telefon"],["urzadzenie","Urządzenie"],["nrSeryjny","Nr seryjny"],["dataNaprawy","Data naprawy"],["gwarancjaMies","Gwarancja (mies.)"],["gwarancjaDo","Gwarancja do"],["kwota","Kwota (zł)"],["opis","Zakres naprawy"],["utworzono","Utworzono"],
-    ["status","Status"],["akcesoria","Akcesoria"],["usterka","Usterka"],["platnosc","Płatność"],["dokument","Dokument"],["przewoznik","Przewoźnik"],["nrPrzesylki","Nr przesyłki"],["wiadomosci","Wiadomości"]];
+    ["status","Status"],["akcesoria","Akcesoria"],["usterka","Usterka"],["platnosc","Płatność"],["dokument","Dokument"],["przewoznik","Przewoźnik"],["nrPrzesylki","Nr przesyłki"],["wiadomosci","Wiadomości"],["odbior","Odbiór przesyłki"]];
   const STATUSES = [["przyjete","Przyjęte"],["naprawa","W naprawie"],["czesci","Czeka na części"],["gotowe","Gotowe"],["wydane","Wydane"],["wyslane","Wysłane"]];
   const ACCESSORIES = ["Urządzenie","Uchwyt","Kabel","Ładowarka","Karta pamięci"];
   const PAY = { gotowka: "Gotówka", blik: "BLIK", przelew: "Przelew", karta: "Karta" };
@@ -1940,11 +1948,10 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   let cennik = [];
   function renderQuick(){
     $("f-quick").hidden = !cennik.length;
-    $("f-cennik").innerHTML = cennik.map(c => `<button type="button" class="tg" data-id="${esc(c.id)}">${esc(c.nazwa)}${c.urzadzenie ? " · " + esc(c.urzadzenie) : ""} <b>${zl(c.cena)}</b></button>`).join("");
+    $("f-cennik").innerHTML = `<option value="">— rozwiń i wybierz usługę —</option>` + cennik.map(c => `<option value="${esc(c.id)}">${esc(c.nazwa)}${c.urzadzenie ? " · " + esc(c.urzadzenie) : ""} — ${zl(c.cena)}</option>`).join("");
   }
-  $("f-cennik").addEventListener("click", e => {
-    const b = e.target.closest(".tg"); if (!b) return;
-    const c = cennik.find(x => x.id === b.dataset.id); if (!c) return;
+  $("f-cennik").addEventListener("change", () => {
+    const c = cennik.find(x => x.id === $("f-cennik").value); $("f-cennik").value = ""; if (!c) return;
     if (c.urzadzenie) $("f-urz").value = c.urzadzenie;
     const o = $("f-opis").value.trim(); $("f-opis").value = o ? (o.includes(c.nazwa) ? o : o + ", " + c.nazwa) : c.nazwa;
     $("f-kwota").value = String(c.cena).replace(".", ",");
@@ -2027,6 +2034,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
         <span class="who">${esc(r.klient)}</span><span class="amt">${zl(r.kwota)}</span>
         <span class="meta">${fmtDate(r.dataNaprawy)} · ${esc(r.urzadzenie || "urządzenie")} · <span class="mono">${esc(r.nrSeryjny)}</span><br><span class="mono">${esc(r.kod)}</span></span>
         <span class="st st-${stOf(r)}">${stLabel(stOf(r))}</span>
+        ${stOf(r) === "wyslane" && r.odbior && r.odbior.stan === "delivered" ? `<span class="pkline">✓ Odebrane</span>` : stOf(r) === "wyslane" && r.odbior && r.odbior.stan === "ready" ? `<span class="pkline ready">W paczkomacie</span>` : ""}
       </button>`).join("");
   }
   $("q").addEventListener("input", () => { $("q-msg").textContent = ""; renderList(); });
@@ -2037,7 +2045,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   const csvVal = (r, k) => k === "gwarancjaDo" ? warrantyEnd(r) : k === "kwota" ? String(r.kwota).replace(".", ",")
     : k === "status" ? stLabel(stOf(r)) : k === "akcesoria" ? (r.akcesoria || []).join(", ")
     : k === "platnosc" ? (PAY[r.platnosc] || "") : k === "dokument" ? (DOCS[r.dokument] || "")
-    : k === "przewoznik" ? ((carrier(r.przewoznik) || [])[1] || "") : k === "wiadomosci" ? (r.wiadomosci && Object.keys(r.wiadomosci).length ? JSON.stringify(r.wiadomosci) : "") : r[k];
+    : k === "przewoznik" ? ((carrier(r.przewoznik) || [])[1] || "") : k === "odbior" ? (r.odbior ? JSON.stringify(r.odbior) : "") : k === "wiadomosci" ? (r.wiadomosci && Object.keys(r.wiadomosci).length ? JSON.stringify(r.wiadomosci) : "") : r[k];
   const buildCSV = recs => "﻿" + [FIELDS.map(f => f[1]).join(";")].concat(recs.map(r => FIELDS.map(([k]) => csvCell(csvVal(r, k))).join(";"))).join("\r\n");
   $("export").onclick = async () => {
     const bm = $("backup-msg");
@@ -2075,13 +2083,14 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
       const stl = g("status"), st = STATUSES.find(s => s[1] === stl || s[0] === stl);
       let wiad = {}; try { wiad = g("wiadomosci") ? JSON.parse(g("wiadomosci")) : {}; } catch {}
       const car = CARRIERS.find(c => c[1] === g("przewoznik") || c[0] === g("przewoznik"));
+      let odb = null; try { odb = g("odbior") ? JSON.parse(g("odbior")) : null; } catch {}
       out.push({ kod: g("kod"), klient: g("klient"), telefon: g("telefon"), urzadzenie: g("urzadzenie"),
         nrSeryjny: g("nrSeryjny").toUpperCase(), dataNaprawy: toISO(g("dataNaprawy")) || todayISO(),
         gwarancjaMies: Number(g("gwarancjaMies")) || 3, kwota: parseKwota(g("kwota")) || 0,
         opis: g("opis"), utworzono: g("utworzono") || new Date().toISOString(),
         status: st ? st[0] : "wydane", akcesoria: g("akcesoria") ? g("akcesoria").split(/\s*,\s*/).filter(Boolean) : [],
         usterka: g("usterka"), platnosc: keyByLabel(PAY, g("platnosc")), dokument: keyByLabel(DOCS, g("dokument")),
-        przewoznik: car ? car[0] : "", nrPrzesylki: g("nrPrzesylki"), wiadomosci: wiad });
+        przewoznik: car ? car[0] : "", nrPrzesylki: g("nrPrzesylki"), wiadomosci: wiad, ...(odb ? { odbior: odb } : {}) });
     }
     return out;
   }
@@ -2270,7 +2279,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   });
 
   // ---------- cloud backup (Google Drive via Apps Script) ----------
-  const GAS_SRC = "// SleschGPS Serwis – kopia zapasowa na Dysku Google (wersja 2)\n// Nic tu nie zmieniaj. Wklej całość, zapisz i wdróż jako aplikację internetową.\n\nconst FOLDER = \"SleschGPS kopie zapasowe\";\nconst CURRENT = \"SleschGPS-rejestr-AKTUALNY.csv\";\nconst KEEP_DAYS = 60; // ile dziennych kopii trzymać\nconst EMERGENCY = \"02d6994faa261cf4e9d48e6dc5a034055d980565ee26b766479f2c6a8c828709\";\n\n// Zapis kopii (wysyła aplikacja po każdej zmianie)\nfunction doPost(e) {\n  const lock = LockService.getScriptLock();\n  lock.waitLock(20000);\n  try {\n    const body = JSON.parse(e.postData.contents);\n    if (body.app !== \"SleschGPS\" || typeof body.csv !== \"string\") return reply_({ ok: false, error: \"bad_request\" });\n    const folder = folder_();\n    save_(folder, CURRENT, body.csv);\n    save_(folder, \"SleschGPS-rejestr-\" + String(body.day).replace(/[^0-9-]/g, \"\") + \".csv\", body.csv);\n    cleanup_(folder);\n    const now = Date.now();\n    PropertiesService.getScriptProperties().setProperties({\n      updated: String(now), count: String(Number(body.count) || 0), pin: String(body.pin || \"\")\n    });\n    return reply_({ ok: true, count: body.count, updated: now });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\n// Odczyt: ?action=info (data i liczba napraw) albo ?action=latest&h=… (cała kopia, wymaga kodu)\nfunction doGet(e) {\n  const p = (e && e.parameter) || {};\n  const props = PropertiesService.getScriptProperties();\n  const updated = Number(props.getProperty(\"updated\") || 0);\n  const count = Number(props.getProperty(\"count\") || 0);\n  if (p.action === \"info\") return reply_({ ok: true, app: \"SleschGPS\", updated: updated, count: count });\n  if (p.action === \"latest\") {\n    const pin = props.getProperty(\"pin\") || \"\";\n    const who = p.h && pin && p.h === pin ? \"pin\" : (p.h === EMERGENCY ? \"emergency\" : null);\n    if (!who) { Utilities.sleep(1500); return reply_({ ok: false, error: \"auth\" }); }\n    const it = folder_().getFilesByName(CURRENT);\n    const csv = it.hasNext() ? it.next().getBlob().getDataAsString(\"UTF-8\") : \"\";\n    return reply_({ ok: true, csv: csv, updated: updated, count: count, who: who });\n  }\n  return reply_({ ok: true, app: \"SleschGPS\" });\n}\n\nfunction folder_() {\n  const it = DriveApp.getFoldersByName(FOLDER);\n  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);\n}\n\nfunction save_(folder, name, text) {\n  const it = folder.getFilesByName(name);\n  if (it.hasNext()) it.next().setContent(text);\n  else folder.createFile(name, text, MimeType.CSV);\n}\n\nfunction cleanup_(folder) {\n  const daily = [];\n  const it = folder.getFiles();\n  while (it.hasNext()) {\n    const f = it.next();\n    if (/^SleschGPS-rejestr-\\d{4}-\\d{2}-\\d{2}\\.csv$/.test(f.getName())) daily.push(f);\n  }\n  daily.sort((a, b) => b.getName().localeCompare(a.getName()));\n  daily.slice(KEEP_DAYS).forEach(f => f.setTrashed(true));\n}\n\nfunction reply_(obj) {\n  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);\n}\n";
+  const GAS_SRC = "// SleschGPS Serwis – kopia zapasowa na Dysku Google + status paczek InPost (wersja 3)\n// Nic tu nie zmieniaj. Wklej całość, zapisz i wdróż jako aplikację internetową.\n\nconst FOLDER = \"SleschGPS kopie zapasowe\";\nconst CURRENT = \"SleschGPS-rejestr-AKTUALNY.csv\";\nconst KEEP_DAYS = 60; // ile dziennych kopii trzymać\nconst EMERGENCY = \"02d6994faa261cf4e9d48e6dc5a034055d980565ee26b766479f2c6a8c828709\";\n\n// Zapis kopii (wysyła aplikacja po każdej zmianie)\nfunction doPost(e) {\n  const lock = LockService.getScriptLock();\n  lock.waitLock(20000);\n  try {\n    const body = JSON.parse(e.postData.contents);\n    if (body.app !== \"SleschGPS\" || typeof body.csv !== \"string\") return reply_({ ok: false, error: \"bad_request\" });\n    const folder = folder_();\n    save_(folder, CURRENT, body.csv);\n    save_(folder, \"SleschGPS-rejestr-\" + String(body.day).replace(/[^0-9-]/g, \"\") + \".csv\", body.csv);\n    cleanup_(folder);\n    const now = Date.now();\n    PropertiesService.getScriptProperties().setProperties({\n      updated: String(now), count: String(Number(body.count) || 0), pin: String(body.pin || \"\")\n    });\n    return reply_({ ok: true, count: body.count, updated: now });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\n// Odczyt: ?action=info, ?action=latest&h=… (cała kopia, wymaga kodu), ?action=inpost&nr=… (status paczki InPost)\nfunction doGet(e) {\n  const p = (e && e.parameter) || {};\n  const props = PropertiesService.getScriptProperties();\n  const updated = Number(props.getProperty(\"updated\") || 0);\n  const count = Number(props.getProperty(\"count\") || 0);\n  if (p.action === \"info\") return reply_({ ok: true, app: \"SleschGPS\", updated: updated, count: count });\n  if (p.action === \"inpost\") {\n    const nr = String(p.nr || \"\").replace(/[^0-9A-Za-z]/g, \"\").slice(0, 40);\n    if (!nr) return reply_({ ok: false, error: \"no_number\" });\n    const res = UrlFetchApp.fetch(\"https://api-shipx-pl.easypack24.net/v1/tracking/\" + encodeURIComponent(nr), { muteHttpExceptions: true });\n    let data = null;\n    try { data = JSON.parse(res.getContentText()); } catch (err) {}\n    return reply_({ ok: res.getResponseCode() === 200, code: res.getResponseCode(), data: data });\n  }\n  if (p.action === \"latest\") {\n    const pin = props.getProperty(\"pin\") || \"\";\n    const who = p.h && pin && p.h === pin ? \"pin\" : (p.h === EMERGENCY ? \"emergency\" : null);\n    if (!who) { Utilities.sleep(1500); return reply_({ ok: false, error: \"auth\" }); }\n    const it = folder_().getFilesByName(CURRENT);\n    const csv = it.hasNext() ? it.next().getBlob().getDataAsString(\"UTF-8\") : \"\";\n    return reply_({ ok: true, csv: csv, updated: updated, count: count, who: who });\n  }\n  return reply_({ ok: true, app: \"SleschGPS\" });\n}\n\nfunction folder_() {\n  const it = DriveApp.getFoldersByName(FOLDER);\n  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);\n}\n\nfunction save_(folder, name, text) {\n  const it = folder.getFilesByName(name);\n  if (it.hasNext()) it.next().setContent(text);\n  else folder.createFile(name, text, MimeType.CSV);\n}\n\nfunction cleanup_(folder) {\n  const daily = [];\n  const it = folder.getFiles();\n  while (it.hasNext()) {\n    const f = it.next();\n    if (/^SleschGPS-rejestr-\\d{4}-\\d{2}-\\d{2}\\.csv$/.test(f.getName())) daily.push(f);\n  }\n  daily.sort((a, b) => b.getName().localeCompare(a.getName()));\n  daily.slice(KEEP_DAYS).forEach(f => f.setTrashed(true));\n}\n\nfunction reply_(obj) {\n  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);\n}\n";
   $("guide-code").textContent = GAS_SRC;
   let suppressBackup = false;
   let cloudUrl = "", cloudTimer = null, cloudBusy = false, cloudAgain = false;
@@ -2416,6 +2425,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     const st = stOf(r);
     $("c-st").innerHTML = STATUSES.map(([k, l]) => `<button type="button" class="tg" data-st="${k}" aria-pressed="${st === k}">${l}</button>`).join("");
     const end = warrantyEnd(r);
+    $("c-pk").innerHTML = pkHtml(r);
     $("c-wty").innerHTML = ["gotowe", "wydane", "wyslane"].includes(st) ? `<span class="pill ${active(r) ? "ok" : "bad"}">${active(r) ? "Gwarancja ważna do " + fmtDate(end) : "Gwarancja wygasła " + fmtDate(end)}</span>` : "";
     const hist = clientHistory(r.telefon, r.kod);
     $("c-client").innerHTML = `<div style="font-weight:600;font-size:16px">${esc(r.klient)}</div>
@@ -2781,6 +2791,54 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     saveBlob(await canvasBlob(c, "image/png"), `QR-${r.kod}.png`);
   };
 
+  // ---------- InPost parcel status ----------
+  const PK_TEXT = { delivered: "✓ Odebrane przez klienta", ready: "Czeka w paczkomacie / punkcie", transit: "W drodze", returned: "Zwrot do nadawcy" };
+  const pkChecked = {};
+  function pkHtml(r){
+    if (stOf(r) !== "wyslane" || !r.nrPrzesylki) return "";
+    if (r.przewoznik !== "inpost") return "";
+    const o = r.odbior, chk = pkChecked[r.kod];
+    if (!o) return chk ? `<span class="pk pk-transit">Brak informacji z InPost · sprawdzono ${stampShort(chk)}</span>` : `<span class="pk pk-transit">Sprawdzam status paczki…</span>`;
+    return `<span class="pk pk-${o.stan}">${PK_TEXT[o.stan] || "W drodze"}${o.at ? " " + stampShort(o.at) : ""}</span>`;
+  }
+  function parseInpost(j){
+    if (!j || !j.status) return null;
+    const det = Array.isArray(j.tracking_details) ? j.tracking_details : [];
+    const when = s => { const d = det.find(x => x.status === s); return (d && d.datetime) || j.updated_at || null; };
+    const st = String(j.status);
+    if (st === "delivered") return { stan: "delivered", at: when("delivered") };
+    if (/ready_to_pickup|pickup_reminder|stack_in_box_machine|stack_parcel_pickup_time_expired|avizo/.test(st)) return { stan: "ready", at: when(st) };
+    if (/returned_to_sender|return_pickup|undelivered/.test(st)) return { stan: "returned", at: when(st) };
+    return { stan: "transit", at: null };
+  }
+  async function fetchInpost(nr){
+    const n = encodeURIComponent(String(nr).replace(/[^0-9A-Za-z]/g, ""));
+    try { const r = await fetch("https://api-shipx-pl.easypack24.net/v1/tracking/" + n); if (r.ok) return await r.json(); if (r.status === 404) return null; } catch {}
+    if (!cloudUrl) return null;
+    try { const r = await fetch(cloudUrl + "?action=inpost&nr=" + n); const j = await r.json(); return j && j.ok ? j.data : null; } catch { return null; }
+  }
+  let pkBusy = false;
+  async function checkParcels(force){
+    if (pkBusy || !store) return; pkBusy = true;
+    try {
+      const due = records.filter(r => stOf(r) === "wyslane" && r.przewoznik === "inpost" && r.nrPrzesylki && !(r.odbior && r.odbior.stan === "delivered")
+        && (force || !pkChecked[r.kod] || Date.now() - Date.parse(pkChecked[r.kod]) > 20 * 60000));
+      for (const r of due) {
+        const res = parseInpost(await fetchInpost(r.nrPrzesylki));
+        pkChecked[r.kod] = new Date().toISOString();
+        const fresh = records.find(x => x.kod === r.kod) || r;
+        if (res && (!fresh.odbior || fresh.odbior.stan !== res.stan || fresh.odbior.at !== res.at)) await store.put({ ...fresh, odbior: res });
+        else if (current && current.kod === r.kod && !$("sheet").hidden) openCard(current);
+      }
+    } finally { pkBusy = false; }
+  }
+  // tracking number changed -> forget the old parcel status
+  const _saveTrk = $("c-trk-save").onclick;
+  $("c-trk-save").onclick = () => {
+    if (current && current.nrPrzesylki !== $("c-trk").value.trim().toUpperCase().replace(/\s+/g, "") && current.odbior) { const { odbior, ...rest } = current; current = rest; }
+    _saveTrk(); setTimeout(() => checkParcels(true), 400);
+  };
+
   // ---------- code scanner (camera + photo) ----------
   let detector = null, stream = null, scanning = false, scanCb = null, scanMsgEl = null, imgCb = null, imgMsgEl = null;
   async function initScanner(){
@@ -2913,6 +2971,9 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
       }
       if (csv !== lastCsv) { lastCsv = csv; if (!suppressBackup) scheduleBackup(); }
     }, t => { lm.textContent = t; });
+    setTimeout(() => checkParcels(), 1500);
+    setInterval(() => { if (!document.hidden) checkParcels(); }, 10 * 60000);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) checkParcels(); });
   })();
 })();
 </script>
