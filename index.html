@@ -211,6 +211,9 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .sent{font:600 12px var(--f-body);padding:4px 10px;border-radius:99px;border:1px dashed var(--muted);background:transparent;color:var(--muted);cursor:pointer;white-space:nowrap}
 .sent.yes{border-style:solid;border-color:var(--ok);background:var(--ok-bg);color:var(--ok)}
 .trk{display:flex;gap:8px;flex-wrap:wrap}
+.newbox{display:grid;gap:10px;padding:14px;border-radius:12px;background:var(--ok-bg);border:1px solid var(--ok)}
+.newbox b{font-family:var(--f-display);font-size:19px;font-weight:600;color:var(--fg)}
+.newbox p{margin:0;font-size:14px;color:var(--fg)}
 .pk{display:inline-flex;align-items:center;gap:6px;font:600 13px var(--f-body);padding:6px 12px;border-radius:99px}
 .pk-delivered{background:var(--ok-bg);color:var(--ok)}
 .pk-ready{background:var(--info-bg);color:var(--info)}
@@ -446,6 +449,16 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
     <div class="card-top">
       <div><div class="eyebrow">Zlecenie serwisowe</div><div class="code" id="c-code"></div></div>
       <button class="x" id="c-close" aria-label="Zamknij">×</button>
+    </div>
+    <div class="newbox" id="c-new" hidden>
+      <b>✓ Przyjęcie zapisane</b>
+      <p>Wydrukuj naklejkę z kodem QR i przyklej ją do nawigacji, żeby urządzenia się nie pomyliły.</p>
+      <div class="actions">
+        <button class="btn primary" id="c-new-label" type="button">Drukuj naklejkę z QR</button>
+        <button class="btn" id="c-new-intake" type="button">Potwierdzenie dla klienta</button>
+        <button class="btn" id="c-new-later" type="button">Później</button>
+      </div>
+      <span class="msg" id="c-new-msg"></span>
     </div>
     <div class="sec" style="border-top:0;padding-top:0">
       <div class="stchips" id="c-st"></div>
@@ -1983,7 +1996,8 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
       await store.put(rec);
       msg.textContent = editing ? "Zmiany zapisane." : "Przyjęcie zapisane. Wyślij klientowi potwierdzenie.";
       const wasNew = !editing;
-      resetForm(); openCard(rec, wasNew ? "przyjecie" : null);
+      resetForm(); openCard(rec, wasNew ? "przyjecie" : null, wasNew);
+      if (wasNew && store.canSave) { $("c-new").hidden = false; $("c-new-msg").textContent = ""; $("card").scrollTop = 0; }
     } catch (err) {
       msg.className = "msg err";
       msg.textContent = err && err.code === "quota_exceeded" ? "Baza jest pełna. Usuń stare wpisy i spróbuj ponownie." : "Nie udało się zapisać. Spróbuj ponownie.";
@@ -2417,7 +2431,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   $("c-carrier").innerHTML = `<option value="">— przewoźnik —</option>` + CARRIERS.map(c => `<option value="${c[0]}">${c[1]}</option>`).join("");
   const stampShort = iso => { const d = new Date(iso); const p = n => String(n).padStart(2, "0"); return `${p(d.getDate())}.${p(d.getMonth()+1)} ${p(d.getHours())}:${p(d.getMinutes())}`; };
 
-  function openCard(r, highlight){
+  function openCard(r, highlight, noScroll){
     const same = current && current.kod === r.kod && !$("sheet").hidden;
     const scroll = same ? $("card").scrollTop : 0;
     current = r;
@@ -2466,11 +2480,11 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     if ($("c-hist")) $("c-hist").onclick = () => { $("q").value = r.telefon; filterSt = "all"; closeCard(); show("list"); renderList(); };
     const canSave = !!(store && store.canSave);
     ["c-intake", "c-pdf", "c-card", "c-label", "c-qrpng"].forEach(id => $(id).hidden = !canSave);
-    if (!same) { disarm(); setMsg(""); }
+    if (!same) { disarm(); setMsg(""); $("c-new").hidden = true; }
     renderPhotos(r.kod);
     $("sheet").hidden = false;
     $("card").scrollTop = scroll;
-    if (hl && !same) setTimeout(() => { const el = $("c-msgs").querySelector(".pulse"); if (el) el.scrollIntoView({ block: "center", behavior: "smooth" }); }, 60);
+    if (hl && !same && !noScroll) setTimeout(() => { const el = $("c-msgs").querySelector(".pulse"); if (el) el.scrollIntoView({ block: "center", behavior: "smooth" }); }, 60);
   }
   const setMsg = t => { $("c-msg").textContent = t; };
   async function updateCurrent(patch, highlight){
@@ -2532,7 +2546,10 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   $("c-trk-scan").onclick = () => startScan(applyTracking, $("c-trk-msg"));
   $("c-trk-photo").onclick = () => pickImage(applyTracking, $("c-trk-msg"));
 
-  function closeCard(){ $("sheet").hidden = true; current = null; }
+  function closeCard(){ $("sheet").hidden = true; current = null; $("c-new").hidden = true; }
+  $("c-new-label").onclick = async () => { await $("c-label").onclick(); $("c-new-msg").textContent = "Naklejka zapisana jako PDF — otwórz ją i wydrukuj w rozmiarze 100%."; };
+  $("c-new-intake").onclick = async () => { await $("c-intake").onclick(); $("c-new-msg").textContent = "Potwierdzenie zapisane jako PDF. Możesz je też wysłać klientowi SMS-em poniżej."; };
+  $("c-new-later").onclick = () => { $("c-new").hidden = true; };
   $("c-close").onclick = closeCard;
   $("sheet").addEventListener("click", e => { if (e.target.id === "sheet") closeCard(); });
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("sheet").hidden && $("lock").hidden && $("viewer").hidden && $("scanner").hidden) closeCard(); });
