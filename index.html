@@ -165,6 +165,24 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .navicon{flex:none;width:50px;border:1px solid var(--line);background:var(--surface-2);color:var(--muted);border-radius:10px;cursor:pointer;display:grid;place-items:center;position:relative}
 .navicon svg{width:24px;height:24px}
 .navicon[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+@media (max-width:460px){.navrow{gap:6px}.navicon,.gear{width:42px}.seg button{font-size:13px;padding:10px 2px}}
+@media (max-width:380px){.navrow{gap:4px}.navicon,.gear{width:36px}.navicon svg,.gear svg{width:20px;height:20px}.seg button{font-size:12px;padding:10px 1px}}
+.ohead{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ohead h2{margin:0}
+.oitem{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.oitem.new{border-color:var(--signal);box-shadow:inset 3px 0 0 var(--signal)}
+.oitem .otop{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap}
+.oitem .who{font-weight:600;font-size:16px;min-width:0;overflow-wrap:anywhere}
+.oitem .when{font:500 12px var(--f-mono);color:var(--muted)}
+.oitem .dev{font-weight:600;color:var(--accent);overflow-wrap:anywhere}
+.oitem .fault{white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;margin:0}
+.oitem .meta{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.oitem .meta a{color:inherit}
+.ost{font:600 12px var(--f-body);padding:3px 9px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line);color:var(--muted)}
+.ost.nowe{background:var(--signal);border-color:var(--signal);color:#fff}
+.ost.przyjete{background:var(--ok-bg);border-color:var(--ok-bg);color:var(--ok)}
+#f-order{flex-wrap:wrap}
+#f-order-t{flex:1;min-width:0}
 .badge{position:absolute;top:-6px;right:-6px;min-width:20px;height:20px;padding:0 5px;border-radius:99px;background:var(--signal);color:#fff;font:700 11px/20px var(--f-body);text-align:center}
 .toggles{display:flex;flex-wrap:wrap;gap:6px;text-transform:none;letter-spacing:0;font-weight:400}
 .tg{font:600 14px var(--f-body);padding:8px 12px;border-radius:99px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);cursor:pointer;display:inline-flex;align-items:center;gap:6px}
@@ -235,15 +253,7 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .viewer .bar{display:flex;gap:10px;justify-content:center;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 .viewer .bar .btn{background:#1e2833;color:#fff;border-color:#2c3946}
 .viewer .bar .btn.danger{color:#f08a80;border-color:#f08a80}
-.partsadd{display:grid;grid-template-columns:1fr 90px auto;gap:8px;align-items:end}
-@media (max-width:420px){.partsadd{grid-template-columns:1fr 70px}.partsadd .btn{grid-column:1/-1}}
-.plist{display:grid;gap:6px}
-.pitem{display:grid;grid-template-columns:auto 1fr auto auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
-.pitem input[type=checkbox]{width:22px;height:22px;accent-color:var(--accent);padding:0}
-.pitem .nm{min-width:0;overflow-wrap:anywhere;font-weight:500}
-.pitem.done .nm{text-decoration:line-through;color:var(--muted)}
-.pitem .qty{font:600 13px var(--f-mono);color:var(--muted)}
-.pitem .del,.citem .del{border:0;background:none;color:var(--bad);font-size:20px;cursor:pointer;width:32px;height:32px}
+.citem .del{border:0;background:none;color:var(--bad);font-size:20px;cursor:pointer;width:32px;height:32px}
 .citem{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px}
 .citem .nm{min-width:0;overflow-wrap:anywhere}
 .citem .nm small{display:block;color:var(--muted)}
@@ -266,7 +276,7 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
       <button id="tab-new" role="tab" aria-selected="true">Nowa naprawa</button>
       <button id="tab-list" role="tab" aria-selected="false">Rejestr napraw</button>
     </div>
-    <button class="navicon" id="tab-parts" type="button" aria-pressed="false" aria-label="Części do zamówienia" title="Części do zamówienia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg><span class="badge" id="parts-badge" hidden></span></button>
+    <button class="navicon" id="tab-orders" type="button" aria-pressed="false" aria-label="Zgłoszenia ze strony" title="Zgłoszenia ze strony"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg><span class="badge" id="orders-badge" hidden></span></button>
     <button class="gear" id="tab-set" type="button" aria-pressed="false" aria-label="Ustawienia" title="Ustawienia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
   </div>
 
@@ -274,6 +284,7 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 
   <form class="panel" id="form" autocomplete="off">
     <h2 id="form-title">Nowa naprawa</h2>
+    <div class="status warn" id="f-order" hidden><span class="dot"></span><span id="f-order-t"></span><button type="button" class="linkbtn" id="f-order-x">Anuluj</button></div>
     <label id="f-quick" hidden>Wybierz z cennika (opcjonalnie)<select id="f-cennik"></select></label>
     <div class="grid">
       <label class="full">Imię i nazwisko klienta<input id="f-klient" required placeholder="np. Jan Kowalski"></label>
@@ -318,16 +329,13 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
     <div class="msg" id="list-msg"></div>
     <div class="list" id="list"></div>
   </section>
-  <section class="panel" id="parts" hidden>
-    <h2>Części do zamówienia</h2>
-    <p class="hint">Zapisz, co Ci się kończy. Odhacz, gdy zamówisz.</p>
-    <form class="partsadd" id="p-form" autocomplete="off">
-      <label>Część<input id="p-name" placeholder="np. bateria GO 6250"></label>
-      <label>Ilość<input id="p-qty" inputmode="numeric" placeholder="1"></label>
-      <button class="btn primary" type="submit">Dodaj</button>
-    </form>
-    <div class="plist" id="p-list"></div>
-    <div class="actions"><button class="btn" id="p-clear" type="button" hidden>Usuń odhaczone</button><span class="msg" id="p-msg"></span></div>
+  <section class="panel" id="orders" hidden>
+    <div class="ohead"><h2>Zgłoszenia ze strony</h2><button class="btn small" id="o-refresh" type="button">Odśwież</button></div>
+    <p class="hint">Tu trafiają zgłoszenia z formularza „Zleć naprawę” na Twojej stronie. Stuknij <b>Przyjmij do rejestru</b>, gdy dostaniesz urządzenie: dane klienta wpiszą się w formularz nowej naprawy, a Ty uzupełnisz numer seryjny i kwotę.</p>
+    <div class="status" id="o-status" hidden><span class="dot"></span><span id="o-status-t"></span></div>
+    <div class="filters" id="o-filters"></div>
+    <div class="list" id="o-list"></div>
+    <span class="msg" id="o-msg"></span>
   </section>
   <div class="stack" id="settings" hidden>
   <section class="panel">
@@ -439,7 +447,7 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
       <pre class="codeblock" id="guide-code"></pre>
       <span class="msg" id="guide-msg"></span>
     </div>
-    <p class="note"><b>Drugi komputer lub telefon:</b> otwórz adres aplikacji, wejdź w ⚙ → Kopia w chmurze, wklej ten sam adres /exec i stuknij <b>Pobierz z chmury</b>. Program zapyta o kod zabezpieczający (lub hasło awaryjne) i wczyta najnowszą kopię. Pracuj zawsze na jednym urządzeniu naraz — gdy na Dysku jest nowsza kopia z innego urządzenia, program pokaże czerwony pasek i wstrzyma wysyłanie, dopóki jej nie pobierzesz.<br><br><b>Masz już wdrożoną starszą wersję skryptu?</b> Podmień w edytorze cały tekst na nowy skrypt, zapisz, potem <b>Wdróż → Zarządzaj wdrożeniami</b> → ikona ołówka → Wersja: <b>Nowa wersja</b> → <b>Wdróż</b>. Jeśli Google poprosi o zgodę („łączenie z usługą zewnętrzną” — to sprawdzanie paczek InPost), kliknij <b>Autoryzuj dostęp</b> → Zaawansowane → Zezwól. Adres /exec się nie zmienia.</p>
+    <p class="note"><b>Drugi komputer lub telefon:</b> otwórz adres aplikacji, wejdź w ⚙ → Kopia w chmurze, wklej ten sam adres /exec i stuknij <b>Pobierz z chmury</b>. Program zapyta o kod zabezpieczający (lub hasło awaryjne) i wczyta najnowszą kopię. Pracuj zawsze na jednym urządzeniu naraz — gdy na Dysku jest nowsza kopia z innego urządzenia, program pokaże czerwony pasek i wstrzyma wysyłanie, dopóki jej nie pobierzesz.<br><br><b>Masz już wdrożoną starszą wersję skryptu?</b> Podmień w edytorze cały tekst na nowy skrypt, zapisz, potem <b>Wdróż → Zarządzaj wdrożeniami</b> → ikona ołówka → Wersja: <b>Nowa wersja</b> → <b>Wdróż</b>. Google poprosi o zgodę na nowe uprawnienia (arkusze na zgłoszenia ze strony, wysyłanie maili z powiadomieniem, sprawdzanie paczek InPost): kliknij <b>Autoryzuj dostęp</b> → Zaawansowane → Zezwól. Adres /exec się nie zmienia.</p>
     <p class="note"><b>Gdzie są kopie?</b> Na Dysku Google w folderze <b>SleschGPS kopie zapasowe</b>. Plik <b>SleschGPS-rejestr-AKTUALNY.csv</b> to zawsze najnowszy stan, a pliki z datą to kopie z każdego dnia (ostatnie 60 dni).<br><br><b>Odtwarzanie:</b> pobierz plik z Dysku na telefon, potem Rejestr napraw → <b>Wczytaj z pliku</b>.</p>
   </div>
 </div>
@@ -1919,11 +1927,11 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     $("register").hidden = tab !== "list";
     $("tab-set").setAttribute("aria-pressed", tab === "set");
     $("settings").hidden = tab !== "set";
-    $("tab-parts").setAttribute("aria-pressed", tab === "parts");
-    $("parts").hidden = tab !== "parts";
+    $("tab-orders").setAttribute("aria-pressed", tab === "orders");
+    $("orders").hidden = tab !== "orders";
   }
   $("tab-set").onclick = () => { if (view === "set") { show("list"); return; } show("set"); renderPreview(); };
-  $("tab-parts").onclick = () => { if (view === "parts") { show("list"); return; } show("parts"); };
+  $("tab-orders").onclick = () => { if (view === "orders") { show("list"); return; } show("orders"); renderOrders(); loadOrders(); };
   $("tab-new").onclick = () => show("new");
   $("tab-list").onclick = () => show("list");
 
@@ -1932,11 +1940,13 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   $("f-acc").addEventListener("click", e => { const b = e.target.closest(".tg"); if (b) b.setAttribute("aria-pressed", b.getAttribute("aria-pressed") !== "true"); });
   const getAcc = () => [...$("f-acc").querySelectorAll('.tg[aria-pressed="true"]')].map(b => b.dataset.acc);
   const setAcc = list => $("f-acc").querySelectorAll(".tg").forEach(b => b.setAttribute("aria-pressed", (list || []).includes(b.dataset.acc)));
+  let pendingOrder = null;
   function resetForm(){
     $("form").reset(); $("f-data").value = todayISO(); $("f-gw").value = "3";
     setAcc(["Urządzenie"]); $("f-tel-hint").hidden = true;
     editing = null; $("form-title").textContent = "Nowa naprawa";
     $("save").textContent = "Zapisz przyjęcie"; $("cancel-edit").hidden = true;
+    pendingOrder = null; $("f-order").hidden = true;
   }
   resetForm();
   $("cancel-edit").onclick = () => { resetForm(); $("form-msg").textContent = ""; };
@@ -1994,6 +2004,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
         rec.kod = kod; rec.utworzono = new Date().toISOString(); rec.status = "przyjete"; rec.wiadomosci = {};
       }
       await store.put(rec);
+      if (!editing && pendingOrder) { const po = pendingOrder; setOrder(po.id, "przyjete", rec.kod).then(ok => { if (!ok) $("o-msg").textContent = "Naprawa zapisana, ale nie udało się oznaczyć zgłoszenia jako przyjętego. Zrób to ręcznie w zakładce zgłoszeń."; }); }
       msg.textContent = editing ? "Zmiany zapisane." : "Przyjęcie zapisane. Wyślij klientowi potwierdzenie.";
       const wasNew = !editing;
       resetForm(); openCard(rec, wasNew ? "przyjecie" : null, wasNew);
@@ -2202,25 +2213,6 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   });
   $("c-list").addEventListener("click", async e => { const b = e.target.closest(".del"); if (!b) return; cennik = cennik.filter(c => c.id !== b.dataset.id); await saveCennik(); renderCennik(); });
 
-  // parts to order
-  let parts = [];
-  function renderParts(){
-    const open = parts.filter(p => !p.done).length;
-    $("parts-badge").hidden = !open; $("parts-badge").textContent = open;
-    $("p-clear").hidden = !parts.some(p => p.done);
-    $("p-list").innerHTML = parts.length ? parts.map(p => `<div class="pitem${p.done ? " done" : ""}"><input type="checkbox" data-id="${esc(p.id)}" ${p.done ? "checked" : ""} aria-label="Zamówione"><span class="nm">${esc(p.nazwa)}</span><span class="qty">${p.ilosc ? "× " + esc(p.ilosc) : ""}</span><button class="del" type="button" data-id="${esc(p.id)}" aria-label="Usuń">×</button></div>`).join("")
-      : `<div class="empty" style="padding:16px"><span>Lista jest pusta. Wpisz część, która się kończy.</span></div>`;
-  }
-  async function saveParts(){ try { await store.setSetting("czesci", JSON.stringify(parts)); } catch { $("p-msg").textContent = "Nie udało się zapisać listy."; } }
-  $("p-form").addEventListener("submit", async e => {
-    e.preventDefault();
-    const n = $("p-name").value.trim(); if (!n) { $("p-msg").textContent = "Wpisz nazwę części."; return; }
-    parts.unshift({ id: uid(), nazwa: n, ilosc: $("p-qty").value.trim(), done: false });
-    await saveParts(); $("p-form").reset(); $("p-msg").textContent = ""; renderParts(); $("p-name").focus();
-  });
-  $("p-list").addEventListener("change", async e => { const c = e.target.closest("input[type=checkbox]"); if (!c) return; const p = parts.find(x => x.id === c.dataset.id); if (p) { p.done = c.checked; await saveParts(); renderParts(); } });
-  $("p-list").addEventListener("click", async e => { const b = e.target.closest(".del"); if (!b) return; parts = parts.filter(p => p.id !== b.dataset.id); await saveParts(); renderParts(); });
-  $("p-clear").onclick = async () => { parts = parts.filter(p => !p.done); await saveParts(); renderParts(); };
 
   // ---------- security code ----------
   const EMERGENCY = "02d6994faa261cf4e9d48e6dc5a034055d980565ee26b766479f2c6a8c828709";
@@ -2293,7 +2285,7 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   });
 
   // ---------- cloud backup (Google Drive via Apps Script) ----------
-  const GAS_SRC = "// SleschGPS Serwis – kopia zapasowa na Dysku Google + status paczek InPost (wersja 3)\n// Nic tu nie zmieniaj. Wklej całość, zapisz i wdróż jako aplikację internetową.\n\nconst FOLDER = \"SleschGPS kopie zapasowe\";\nconst CURRENT = \"SleschGPS-rejestr-AKTUALNY.csv\";\nconst KEEP_DAYS = 60; // ile dziennych kopii trzymać\nconst EMERGENCY = \"02d6994faa261cf4e9d48e6dc5a034055d980565ee26b766479f2c6a8c828709\";\n\n// Zapis kopii (wysyła aplikacja po każdej zmianie)\nfunction doPost(e) {\n  const lock = LockService.getScriptLock();\n  lock.waitLock(20000);\n  try {\n    const body = JSON.parse(e.postData.contents);\n    if (body.app !== \"SleschGPS\" || typeof body.csv !== \"string\") return reply_({ ok: false, error: \"bad_request\" });\n    const folder = folder_();\n    save_(folder, CURRENT, body.csv);\n    save_(folder, \"SleschGPS-rejestr-\" + String(body.day).replace(/[^0-9-]/g, \"\") + \".csv\", body.csv);\n    cleanup_(folder);\n    const now = Date.now();\n    PropertiesService.getScriptProperties().setProperties({\n      updated: String(now), count: String(Number(body.count) || 0), pin: String(body.pin || \"\")\n    });\n    return reply_({ ok: true, count: body.count, updated: now });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\n// Odczyt: ?action=info, ?action=latest&h=… (cała kopia, wymaga kodu), ?action=inpost&nr=… (status paczki InPost)\nfunction doGet(e) {\n  const p = (e && e.parameter) || {};\n  const props = PropertiesService.getScriptProperties();\n  const updated = Number(props.getProperty(\"updated\") || 0);\n  const count = Number(props.getProperty(\"count\") || 0);\n  if (p.action === \"info\") return reply_({ ok: true, app: \"SleschGPS\", updated: updated, count: count });\n  if (p.action === \"inpost\") {\n    const nr = String(p.nr || \"\").replace(/[^0-9A-Za-z]/g, \"\").slice(0, 40);\n    if (!nr) return reply_({ ok: false, error: \"no_number\" });\n    const res = UrlFetchApp.fetch(\"https://api-shipx-pl.easypack24.net/v1/tracking/\" + encodeURIComponent(nr), { muteHttpExceptions: true });\n    let data = null;\n    try { data = JSON.parse(res.getContentText()); } catch (err) {}\n    return reply_({ ok: res.getResponseCode() === 200, code: res.getResponseCode(), data: data });\n  }\n  if (p.action === \"latest\") {\n    const pin = props.getProperty(\"pin\") || \"\";\n    const who = p.h && pin && p.h === pin ? \"pin\" : (p.h === EMERGENCY ? \"emergency\" : null);\n    if (!who) { Utilities.sleep(1500); return reply_({ ok: false, error: \"auth\" }); }\n    const it = folder_().getFilesByName(CURRENT);\n    const csv = it.hasNext() ? it.next().getBlob().getDataAsString(\"UTF-8\") : \"\";\n    return reply_({ ok: true, csv: csv, updated: updated, count: count, who: who });\n  }\n  return reply_({ ok: true, app: \"SleschGPS\" });\n}\n\nfunction folder_() {\n  const it = DriveApp.getFoldersByName(FOLDER);\n  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);\n}\n\nfunction save_(folder, name, text) {\n  const it = folder.getFilesByName(name);\n  if (it.hasNext()) it.next().setContent(text);\n  else folder.createFile(name, text, MimeType.CSV);\n}\n\nfunction cleanup_(folder) {\n  const daily = [];\n  const it = folder.getFiles();\n  while (it.hasNext()) {\n    const f = it.next();\n    if (/^SleschGPS-rejestr-\\d{4}-\\d{2}-\\d{2}\\.csv$/.test(f.getName())) daily.push(f);\n  }\n  daily.sort((a, b) => b.getName().localeCompare(a.getName()));\n  daily.slice(KEEP_DAYS).forEach(f => f.setTrashed(true));\n}\n\nfunction reply_(obj) {\n  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);\n}\n";
+  const GAS_SRC = "// SleschGPS Serwis – kopia zapasowa na Dysku Google + status paczek InPost + zgłoszenia ze strony (wersja 4)\n// Nic tu nie zmieniaj. Wklej całość, zapisz i wdróż jako aplikację internetową.\n\nconst FOLDER = \"SleschGPS kopie zapasowe\";\nconst CURRENT = \"SleschGPS-rejestr-AKTUALNY.csv\";\nconst KEEP_DAYS = 60; // ile dziennych kopii trzymać\nconst EMERGENCY = \"02d6994faa261cf4e9d48e6dc5a034055d980565ee26b766479f2c6a8c828709\";\nconst NOTIFY = \"sleschgsm@wp.pl\"; // tu przychodzą powiadomienia o nowych zgłoszeniach\nconst ORDERS = \"SleschGPS zgłoszenia ze strony\";\nconst ORDER_COLS = [\"ID\", \"Data zgłoszenia\", \"Status\", \"Imię i nazwisko\", \"Telefon\", \"E-mail\", \"Urządzenie\", \"Usterka\", \"Dostarczenie\", \"Uwagi\", \"Kod naprawy\"];\nconst ORDER_STATUSES = [\"nowe\", \"przyjete\", \"odrzucone\"];\nconst MAX_PER_HOUR = 40;\n\n// Zapis: kopia rejestru (wysyła aplikacja), zgłoszenie ze strony, zmiana statusu zgłoszenia\nfunction doPost(e) {\n  let body;\n  try { body = JSON.parse(e.postData.contents); } catch (err) { return reply_({ ok: false, error: \"bad_request\" }); }\n  if (body && body.app === \"SleschGPS-zgloszenie\") return newOrder_(body);\n  if (body && body.app === \"SleschGPS-zgloszenie-status\") return setOrder_(body);\n  const lock = LockService.getScriptLock();\n  lock.waitLock(20000);\n  try {\n    if (!body || body.app !== \"SleschGPS\" || typeof body.csv !== \"string\") return reply_({ ok: false, error: \"bad_request\" });\n    const folder = folder_();\n    save_(folder, CURRENT, body.csv);\n    save_(folder, \"SleschGPS-rejestr-\" + String(body.day).replace(/[^0-9-]/g, \"\") + \".csv\", body.csv);\n    cleanup_(folder);\n    const now = Date.now();\n    PropertiesService.getScriptProperties().setProperties({\n      updated: String(now), count: String(Number(body.count) || 0), pin: String(body.pin || \"\")\n    });\n    return reply_({ ok: true, count: body.count, updated: now });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\n// Odczyt: ?action=info, ?action=latest&h=… (cała kopia, wymaga kodu), ?action=inpost&nr=… (status paczki InPost),\n// ?action=orders&h=… (zgłoszenia ze strony, wymaga kodu)\nfunction doGet(e) {\n  const p = (e && e.parameter) || {};\n  const props = PropertiesService.getScriptProperties();\n  const updated = Number(props.getProperty(\"updated\") || 0);\n  const count = Number(props.getProperty(\"count\") || 0);\n  if (p.action === \"info\") return reply_({ ok: true, app: \"SleschGPS\", version: 4, updated: updated, count: count });\n  if (p.action === \"inpost\") {\n    const nr = String(p.nr || \"\").replace(/[^0-9A-Za-z]/g, \"\").slice(0, 40);\n    if (!nr) return reply_({ ok: false, error: \"no_number\" });\n    const res = UrlFetchApp.fetch(\"https://api-shipx-pl.easypack24.net/v1/tracking/\" + encodeURIComponent(nr), { muteHttpExceptions: true });\n    let data = null;\n    try { data = JSON.parse(res.getContentText()); } catch (err) {}\n    return reply_({ ok: res.getResponseCode() === 200, code: res.getResponseCode(), data: data });\n  }\n  if (p.action === \"latest\") {\n    const who = auth_(p.h);\n    if (!who) { Utilities.sleep(1500); return reply_({ ok: false, error: \"auth\" }); }\n    const it = folder_().getFilesByName(CURRENT);\n    const csv = it.hasNext() ? it.next().getBlob().getDataAsString(\"UTF-8\") : \"\";\n    return reply_({ ok: true, csv: csv, updated: updated, count: count, who: who });\n  }\n  if (p.action === \"orders\") {\n    if (!auth_(p.h)) { Utilities.sleep(1500); return reply_({ ok: false, error: \"auth\" }); }\n    const sh = ordersSheet_();\n    const n = sh.getLastRow() - 1;\n    const rows = n > 0 ? sh.getRange(2, 1, n, ORDER_COLS.length).getValues() : [];\n    const list = rows.filter(r => r[0]).map(r => ({\n      id: String(r[0]), data: r[1] instanceof Date ? r[1].toISOString() : String(r[1]), status: String(r[2] || \"nowe\"),\n      klient: plain_(r[3]), telefon: plain_(r[4]), email: plain_(r[5]), urzadzenie: plain_(r[6]),\n      usterka: plain_(r[7]), dostarczenie: plain_(r[8]), uwagi: plain_(r[9]), kod: plain_(r[10])\n    })).reverse().slice(0, 300);\n    return reply_({ ok: true, orders: list });\n  }\n  return reply_({ ok: true, app: \"SleschGPS\", version: 4 });\n}\n\nfunction auth_(h) {\n  const pin = PropertiesService.getScriptProperties().getProperty(\"pin\") || \"\";\n  if (h && pin && h === pin) return \"pin\";\n  if (h && h === EMERGENCY) return \"emergency\";\n  return null;\n}\n\n// ---------- zgłoszenia ze strony ----------\nfunction newOrder_(b) {\n  if (b.web) return reply_({ ok: true }); // pułapka na roboty\n  const f = k => String(b[k] == null ? \"\" : b[k]).replace(/\\s+/g, \" \").trim();\n  const o = {\n    klient: f(\"klient\").slice(0, 80), telefon: f(\"telefon\").slice(0, 30), email: f(\"email\").slice(0, 120),\n    urzadzenie: f(\"urzadzenie\").slice(0, 120), usterka: String(b.usterka || \"\").trim().slice(0, 2000),\n    dostarczenie: f(\"dostarczenie\").slice(0, 60), uwagi: String(b.uwagi || \"\").trim().slice(0, 1000)\n  };\n  if (!o.klient || o.telefon.replace(/\\D/g, \"\").length < 9 || !o.urzadzenie || !o.usterka || b.zgoda !== true) {\n    return reply_({ ok: false, error: \"missing\" });\n  }\n  const cache = CacheService.getScriptCache();\n  const hits = Number(cache.get(\"hits\") || 0);\n  if (hits >= MAX_PER_HOUR) return reply_({ ok: false, error: \"busy\" });\n  cache.put(\"hits\", String(hits + 1), 3600);\n\n  const id = \"Z\" + Utilities.formatDate(new Date(), \"Europe/Warsaw\", \"yyMMddHHmmss\") + Math.floor(Math.random() * 90 + 10);\n  const lock = LockService.getScriptLock();\n  lock.waitLock(20000);\n  try {\n    ordersSheet_().appendRow([id, new Date(), \"nowe\", safe_(o.klient), safe_(o.telefon), safe_(o.email),\n      safe_(o.urzadzenie), safe_(o.usterka), safe_(o.dostarczenie), safe_(o.uwagi), \"\"]);\n  } finally {\n    lock.releaseLock();\n  }\n  try {\n    const okMail = /^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$/.test(o.email);\n    MailApp.sendEmail({\n      to: NOTIFY,\n      subject: \"Nowe zgłoszenie naprawy: \" + o.urzadzenie + \" – \" + o.klient,\n      body: \"Nowe zgłoszenie ze strony SleschGPS\\n\\n\" +\n        \"Klient: \" + o.klient + \"\\nTelefon: \" + o.telefon + \"\\nE-mail: \" + (o.email || \"—\") +\n        \"\\nUrządzenie: \" + o.urzadzenie + \"\\nDostarczenie: \" + (o.dostarczenie || \"—\") +\n        \"\\n\\nUsterka:\\n\" + o.usterka + (o.uwagi ? \"\\n\\nUwagi:\\n\" + o.uwagi : \"\") +\n        \"\\n\\nZgłoszenie czeka w aplikacji SleschGPS Serwis → Zgłoszenia ze strony.\",\n      replyTo: okMail ? o.email : NOTIFY\n    });\n  } catch (err) {}\n  return reply_({ ok: true, id: id });\n}\n\nfunction setOrder_(b) {\n  if (!auth_(b.h)) { Utilities.sleep(1500); return reply_({ ok: false, error: \"auth\" }); }\n  if (ORDER_STATUSES.indexOf(b.status) < 0) return reply_({ ok: false, error: \"bad_status\" });\n  const lock = LockService.getScriptLock();\n  lock.waitLock(20000);\n  try {\n    const sh = ordersSheet_();\n    const n = sh.getLastRow() - 1;\n    if (n < 1) return reply_({ ok: false, error: \"not_found\" });\n    const ids = sh.getRange(2, 1, n, 1).getValues();\n    for (let i = 0; i < ids.length; i++) {\n      if (String(ids[i][0]) === String(b.id)) {\n        sh.getRange(i + 2, 3).setValue(b.status);\n        if (b.kod != null) sh.getRange(i + 2, 11).setValue(safe_(String(b.kod).slice(0, 40)));\n        return reply_({ ok: true });\n      }\n    }\n    return reply_({ ok: false, error: \"not_found\" });\n  } finally {\n    lock.releaseLock();\n  }\n}\n\nfunction ordersSheet_() {\n  const props = PropertiesService.getScriptProperties();\n  let ss = null;\n  const id = props.getProperty(\"ordersId\");\n  if (id) { try { ss = SpreadsheetApp.openById(id); } catch (err) { ss = null; } }\n  if (!ss) {\n    ss = SpreadsheetApp.create(ORDERS);\n    try { DriveApp.getFileById(ss.getId()).moveTo(folder_()); } catch (err) {}\n    const sh = ss.getSheets()[0];\n    sh.setName(\"Zgłoszenia\");\n    sh.appendRow(ORDER_COLS);\n    sh.setFrozenRows(1);\n    sh.getRange(1, 1, 1, ORDER_COLS.length).setFontWeight(\"bold\");\n    props.setProperty(\"ordersId\", ss.getId());\n  }\n  return ss.getSheets()[0];\n}\n\n// arkusz nie wykona tekstu klienta jako formuły\nfunction safe_(v) { const s = String(v == null ? \"\" : v); return /^[=+\\-@]/.test(s) ? \"'\" + s : s; }\nfunction plain_(v) { return String(v == null ? \"\" : v); }\n\n// ---------- kopie zapasowe ----------\nfunction folder_() {\n  const it = DriveApp.getFoldersByName(FOLDER);\n  return it.hasNext() ? it.next() : DriveApp.createFolder(FOLDER);\n}\n\nfunction save_(folder, name, text) {\n  const it = folder.getFilesByName(name);\n  if (it.hasNext()) it.next().setContent(text);\n  else folder.createFile(name, text, MimeType.CSV);\n}\n\nfunction cleanup_(folder) {\n  const daily = [];\n  const it = folder.getFiles();\n  while (it.hasNext()) {\n    const f = it.next();\n    if (/^SleschGPS-rejestr-\\d{4}-\\d{2}-\\d{2}\\.csv$/.test(f.getName())) daily.push(f);\n  }\n  daily.sort((a, b) => b.getName().localeCompare(a.getName()));\n  daily.slice(KEEP_DAYS).forEach(f => f.setTrashed(true));\n}\n\nfunction reply_(obj) {\n  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);\n}\n";
   $("guide-code").textContent = GAS_SRC;
   let suppressBackup = false;
   let cloudUrl = "", cloudTimer = null, cloudBusy = false, cloudAgain = false;
@@ -2423,6 +2415,96 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     if (p) p.then(() => { $("guide-msg").textContent = "Skopiowano skrypt. Wklej go w edytorze Google."; }, fallback); else fallback();
   };
   document.addEventListener("keydown", e => { if (e.key !== "Escape") return; if (!$("lock").hidden) closeLock(); else if (!$("guide").hidden) $("guide").hidden = true; });
+
+  // ---------- orders from the website ----------
+  const O_ST = [["nowe","Nowe"],["przyjete","Przyjęte"],["odrzucone","Odrzucone"]];
+  let orders = null, oFilter = "nowe", oBusy = false, oErr = "";
+  const oLabel = k => (O_ST.find(x => x[0] === k) || O_ST[0])[1];
+  function oState(kind, text){ const b = $("o-status"); b.hidden = !text; b.className = "status " + kind; $("o-status-t").textContent = text || ""; }
+  function oBadge(){
+    const n = orders ? orders.filter(o => o.status === "nowe").length : 0;
+    const b = $("orders-badge"); b.hidden = !n; b.textContent = n > 9 ? "9+" : String(n);
+  }
+  async function loadOrders(){
+    if (oBusy) return;
+    if (!cloudUrl) { oErr = "Zgłoszenia przychodzą przez skrypt Google z kopii w chmurze. Połącz go w ⚙ → Kopia w chmurze."; renderOrders(); return; }
+    if (!pinHash) { oErr = "Ustaw kod zabezpieczający w ⚙ → Kod zabezpieczający. Zgłoszenia zawierają dane klientów i są nim chronione."; renderOrders(); return; }
+    oBusy = true; if (view === "orders") oState("warn", "Sprawdzam zgłoszenia…");
+    try {
+      const r = await fetch(cloudUrl + "?action=orders&h=" + encodeURIComponent(pinHash));
+      const j = await r.json();
+      if (j && j.error === "auth") oErr = "Skrypt Google nie zna jeszcze Twojego kodu. Wejdź w ⚙ → Kopia w chmurze → Wyślij kopię teraz, potem stuknij Odśwież.";
+      else if (j && j.ok && Array.isArray(j.orders)) { orders = j.orders; oErr = ""; }
+      else if (j && j.ok) oErr = "Skrypt Google ma starszą wersję bez zgłoszeń. Zaktualizuj go: ⚙ → Instrukcja konfiguracji → „Masz już wdrożoną starszą wersję skryptu?”.";
+      else oErr = "Skrypt Google zwrócił błąd. Spróbuj ponownie za chwilę.";
+    } catch { oErr = "Nie udało się pobrać zgłoszeń. Sprawdź internet."; }
+    oBusy = false; oBadge(); renderOrders();
+  }
+  async function setOrder(id, status, kod){
+    try {
+      const r = await fetch(cloudUrl, { method: "POST", body: JSON.stringify({ app: "SleschGPS-zgloszenie-status", h: pinHash || "", id, status, kod: kod || "" }), redirect: "follow" });
+      const j = await r.json();
+      if (!j || !j.ok) return false;
+      if (orders) { const o = orders.find(x => x.id === id); if (o) { o.status = status; if (kod) o.kod = kod; } }
+      oBadge(); renderOrders(); return true;
+    } catch { return false; }
+  }
+  function renderOrders(){
+    if (oErr) oState("err", oErr); else if (!oBusy) oState("", "");
+    const all = orders || [];
+    const cnt = { all: all.length }; O_ST.forEach(([k]) => cnt[k] = 0); all.forEach(o => cnt[o.status] = (cnt[o.status] || 0) + 1);
+    $("o-filters").innerHTML = [...O_ST, ["all","Wszystkie"]].map(([k, l]) => `<button type="button" class="tg" data-of="${k}" aria-pressed="${oFilter === k}">${l} <span class="n">${cnt[k] || 0}</span></button>`).join("");
+    const list = $("o-list");
+    if (!orders) { list.innerHTML = oErr ? "" : `<div class="empty"><span>Wczytuję zgłoszenia…</span></div>`; return; }
+    const items = all.filter(o => oFilter === "all" || o.status === oFilter);
+    if (!items.length) {
+      list.innerHTML = `<div class="empty"><strong>${oFilter === "nowe" ? "Brak nowych zgłoszeń" : "Brak zgłoszeń"}</strong><span>${oFilter === "nowe" ? "Gdy klient wypełni formularz „Zleć naprawę” na stronie, zgłoszenie pojawi się tutaj, a na ikonie zobaczysz licznik." : "Nic tu jeszcze nie ma."}</span></div>`;
+      return;
+    }
+    list.innerHTML = items.map(o => {
+      const d = new Date(o.data); const p = n => String(n).padStart(2, "0");
+      const when = isNaN(d) ? "" : `${p(d.getDate())}.${p(d.getMonth()+1)}.${d.getFullYear()} ${p(d.getHours())}:${p(d.getMinutes())}`;
+      const tel = String(o.telefon || "").replace(/[^0-9+]/g, "");
+      return `<div class="oitem${o.status === "nowe" ? " new" : ""}" data-id="${esc(o.id)}">
+        <div class="otop"><span class="who">${esc(o.klient)}</span><span class="ost ${esc(o.status)}">${oLabel(o.status)}</span></div>
+        <div class="dev">${esc(o.urzadzenie)}</div>
+        <p class="fault">${esc(o.usterka)}</p>
+        ${o.uwagi ? `<div class="meta">Uwagi: ${esc(o.uwagi)}</div>` : ""}
+        <div class="meta"><a href="tel:${esc(tel)}">${esc(o.telefon)}</a>${o.email ? ` · <a href="mailto:${esc(o.email)}">${esc(o.email)}</a>` : ""}${o.dostarczenie ? ` · ${esc(o.dostarczenie)}` : ""}</div>
+        <div class="otop"><span class="when">${when}${o.kod ? " · " + esc(o.kod) : ""}</span></div>
+        <div class="actions">
+          ${o.status === "nowe" ? `<button class="btn small primary" type="button" data-oa="take">Przyjmij do rejestru</button><button class="btn small danger" type="button" data-oa="drop">Odrzuć</button>`
+            : o.status === "przyjete" && o.kod && records.some(r => r.kod === o.kod) ? `<button class="btn small" type="button" data-oa="open">Otwórz naprawę</button>`
+            : `<button class="btn small" type="button" data-oa="back">Przywróć jako nowe</button>`}
+        </div>
+      </div>`;
+    }).join("");
+  }
+  $("o-filters").addEventListener("click", e => { const b = e.target.closest(".tg"); if (!b) return; oFilter = b.dataset.of; renderOrders(); });
+  $("o-refresh").onclick = () => loadOrders();
+  let oArm = null;
+  $("o-list").addEventListener("click", async e => {
+    const b = e.target.closest("[data-oa]"); if (!b) return;
+    const id = b.closest(".oitem").dataset.id, o = (orders || []).find(x => x.id === id); if (!o) return;
+    const a = b.dataset.oa; $("o-msg").textContent = "";
+    if (a === "take") {
+      show("new"); resetForm();
+      $("f-klient").value = o.klient || ""; $("f-tel").value = o.telefon || ""; $("f-urz").value = o.urzadzenie || "";
+      $("f-usterka").value = [o.usterka, o.uwagi ? "Uwagi klienta: " + o.uwagi : "", o.dostarczenie ? "Dostarczenie: " + o.dostarczenie : ""].filter(Boolean).join("\n");
+      setAcc([]); renderTelHint();
+      pendingOrder = { id: o.id };
+      $("f-order-t").textContent = `Przyjmujesz zgłoszenie ze strony od ${o.klient}. Uzupełnij numer seryjny, kwotę i to, co klient zostawił.`;
+      $("f-order").hidden = false; $("form-msg").textContent = "";
+      $("f-sn").focus(); window.scrollTo({ top: 0 });
+      return;
+    }
+    if (a === "open") { const r = records.find(x => x.kod === o.kod); if (r) openCard(r); return; }
+    if (a === "drop" && oArm !== id) { oArm = id; b.classList.add("armed"); b.textContent = "Na pewno odrzucić?"; setTimeout(() => { if (oArm === id) { oArm = null; renderOrders(); } }, 4000); return; }
+    oArm = null; b.disabled = true;
+    const ok = await setOrder(id, a === "drop" ? "odrzucone" : "nowe");
+    if (!ok) { b.disabled = false; $("o-msg").textContent = "Nie udało się zapisać zmiany. Sprawdź internet i spróbuj ponownie."; }
+  });
+  $("f-order-x").onclick = () => { pendingOrder = null; $("f-order").hidden = true; resetForm(); show("orders"); };
 
   // ---------- card ----------
   const ICON_SMS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>';
@@ -2955,14 +3037,13 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
       const why = MODE === "local" ? "Ta przeglądarka nie pozwala zapisywać danych (tryb prywatny?)." : "Rejestr jest dostępny tylko po zalogowaniu na koncie właściciela.";
       lm.textContent = why; $("form-msg").textContent = why; $("save").disabled = true;
       $("export").disabled = $("import").disabled = true;
-      ["pin-set","cloud-connect","s-save"].forEach(id => $(id).disabled = true); renderCennik(); renderParts(); return;
+      ["pin-set","cloud-connect","s-save"].forEach(id => $(id).disabled = true); renderCennik(); return;
     }
     $("backup-msg").textContent = store.backupNote;
     for (const m of MSGS) { try { const t = await store.getSetting(m[2]); if (t) tpls[m[0]] = t; } catch {} }
     loadTplEditor();
     try { cennik = JSON.parse((await store.getSetting("cennik")) || "[]"); } catch { cennik = []; }
-    try { parts = JSON.parse((await store.getSetting("czesci")) || "[]"); } catch { parts = []; }
-    renderCennik(); renderParts();
+    renderCennik();
     if (MODE !== "local") lm.textContent = "Wczytuję naprawy…";
     try { pinHash = (await store.getSetting("pin")) || null; } catch {}
     renderPin();
@@ -2989,6 +3070,11 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
       if (csv !== lastCsv) { lastCsv = csv; if (!suppressBackup) scheduleBackup(); }
     }, t => { lm.textContent = t; });
     setTimeout(() => checkParcels(), 1500);
+    if (MODE === "local") {
+      setTimeout(loadOrders, 2500);
+      setInterval(() => { if (!document.hidden) loadOrders(); }, 3 * 60000);
+      document.addEventListener("visibilitychange", () => { if (!document.hidden) loadOrders(); });
+    }
     setInterval(() => { if (!document.hidden) checkParcels(); }, 10 * 60000);
     document.addEventListener("visibilitychange", () => { if (!document.hidden) checkParcels(); });
   })();
