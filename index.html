@@ -76,12 +76,19 @@ input:focus,select:focus,textarea:focus,button:focus-visible{outline:3px solid v
 #scan-msg{text-transform:none;letter-spacing:0;font-weight:400;font-size:13px}
 .scanner{position:fixed;inset:0;z-index:30;background:#000;display:grid;grid-template-rows:1fr auto}
 .scanner video{width:100%;height:100%;object-fit:cover;display:block;grid-area:1/1}
-.viewfinder{grid-area:1/1;align-self:center;justify-self:center;width:min(78vw,340px);height:min(46vw,200px);border:3px solid #fff;border-radius:14px;box-shadow:0 0 0 100vmax #0008;pointer-events:none}
+.viewfinder{grid-area:1/1;align-self:center;justify-self:center;width:min(74vw,320px);height:min(58vw,250px);border:3px solid #fff;border-radius:14px;box-shadow:0 0 0 100vmax #0007;pointer-events:none;transition:border-color .2s}
+.viewfinder.found{border-color:#6fd496}
+.scanner{overflow:hidden}
+.scanner video{transition:transform .2s;transform-origin:center;position:relative;z-index:0}
+.viewfinder,.scanhint,.scanbar{position:relative;z-index:2}
 .viewfinder::after{content:"";position:absolute;left:8%;right:8%;top:50%;height:2px;background:#f0954a;box-shadow:0 0 8px #f0954a}
 .viewfinder{position:relative}
 .scanhint{grid-area:1/1;align-self:start;justify-self:center;margin-top:calc(24px + env(safe-area-inset-top,0px));color:#fff;font-weight:600;background:#0009;padding:6px 14px;border-radius:99px;font-size:14px}
 .scanbar{display:flex;gap:10px;justify-content:center;padding:14px max(16px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#000}
+.scanbar{flex-wrap:wrap}
 .scanbar .btn{background:#1e2833;color:#fff;border-color:#2c3946}
+.scanbar .btn[aria-pressed="true"]{background:#f0954a;border-color:#f0954a;color:#1b1400}
+.scanhint.warn{background:#a3322acc}
 .phoneacts{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px;font-family:var(--f-body)}
 .act{display:inline-flex;align-items:center;gap:6px;font:600 13px var(--f-body);padding:6px 11px;border-radius:99px;border:1px solid var(--line);background:var(--surface);color:var(--fg);text-decoration:none;cursor:pointer}
 .act svg{width:16px;height:16px;flex:none}
@@ -410,11 +417,14 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 <div class="scanner" id="scanner" hidden>
   <video id="scan-video" playsinline muted></video>
   <div class="viewfinder" aria-hidden="true"></div>
-  <div class="scanhint">Nakieruj na kod QR lub kreskowy</div>
+  <div class="scanhint" id="scan-hint">Nakieruj kod w ramkę · stuknij ekran, żeby wyostrzyć</div>
   <div class="scanbar">
-    <button class="btn" id="scan-torch" type="button" hidden>Latarka</button>
+    <button class="btn" id="scan-zoom" type="button">Przybliż ×2</button>
+    <button class="btn" id="scan-torch" type="button" hidden aria-pressed="false">Latarka</button>
+    <button class="btn" id="scan-photo-btn" type="button">Zrób zdjęcie kodu</button>
     <button class="btn" id="scan-cancel" type="button">Anuluj</button>
   </div>
+<input id="scan-shot" type="file" accept="image/*" capture="environment" hidden>
 </div>
 
 <div class="sheet" id="lock" hidden style="z-index:40">
@@ -2989,12 +2999,15 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
 
   // ---------- code scanner (camera + photo) ----------
   let detector = null, stream = null, scanning = false, scanCb = null, scanMsgEl = null, imgCb = null, imgMsgEl = null;
+  let scanTrack = null, scanZoom = 1, scanTick = 0, scanStart = 0, scanCanvas = null, hwZoom = null;
+  const WANT = ["qr_code", "code_128", "code_39", "code_93", "ean_13", "ean_8", "upc_a", "upc_e", "itf", "codabar", "data_matrix", "pdf417", "aztec"];
   async function initScanner(){
     if (!("BarcodeDetector" in window)) return;
     try {
-      const formats = await BarcodeDetector.getSupportedFormats();
-      if (!formats.length) return;
-      detector = new BarcodeDetector({ formats });
+      const supported = await BarcodeDetector.getSupportedFormats();
+      if (!supported.length) return;
+      const formats = WANT.filter(f => supported.includes(f));
+      detector = new BarcodeDetector({ formats: formats.length ? formats : supported });
       $("scan").hidden = false; $("q-scan").hidden = false; $("o-scan").hidden = false;
       if (current) openCard(current);
     } catch {}
@@ -3002,45 +3015,124 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   function stopScan(){
     scanning = false;
     if (stream) { stream.getTracks().forEach(t => t.stop()); stream = null; }
-    $("scan-video").srcObject = null;
+    scanTrack = null;
+    $("scan-video").srcObject = null; $("scan-video").style.transform = "";
+    document.querySelector(".viewfinder").classList.remove("found");
     $("scanner").hidden = true;
+  }
+  function finishScan(value){
+    if (!scanning) return;
+    document.querySelector(".viewfinder").classList.add("found");
+    try { navigator.vibrate?.(60); } catch {}
+    scanning = false;
+    setTimeout(() => { stopScan(); scanCb && scanCb(value); }, 150);
+  }
+  // crop of the viewfinder area, at full camera resolution
+  function cropFrame(v){
+    const vw = v.videoWidth, vh = v.videoHeight; if (!vw || !vh) return null;
+    const digital = hwZoom ? 1 : scanZoom;
+    const frac = Math.min(1, 0.7 / digital);
+    const cw = Math.round(vw * frac), ch = Math.round(vh * Math.min(1, frac * 1.25));
+    const sx = Math.round((vw - cw) / 2), sy = Math.round((vh - ch) / 2);
+    const up = Math.max(1, Math.min(2, 900 / Math.max(cw, ch)));
+    scanCanvas = scanCanvas || document.createElement("canvas");
+    scanCanvas.width = Math.round(cw * up); scanCanvas.height = Math.round(ch * up);
+    const g = scanCanvas.getContext("2d", { willReadFrequently: true });
+    g.imageSmoothingEnabled = up > 1;
+    g.drawImage(v, sx, sy, cw, ch, 0, 0, scanCanvas.width, scanCanvas.height);
+    return scanCanvas;
   }
   async function loop(){
     if (!scanning) return;
     const v = $("scan-video");
     if (v.readyState >= 2) {
-      try { const r = await detector.detect(v); if (r.length && scanning) { stopScan(); scanCb && scanCb(r[0].rawValue); return; } } catch {}
+      scanTick++;
+      try {
+        // alternate: zoomed crop of the frame (small or distant codes) and the whole frame
+        const src = scanTick % 3 === 0 ? v : (cropFrame(v) || v);
+        const r = await detector.detect(src);
+        if (r.length && scanning) { finishScan(r[0].rawValue); return; }
+      } catch {}
+      if (scanStart && Date.now() - scanStart > 7000 && !$("scan-hint").classList.contains("warn")) {
+        $("scan-hint").classList.add("warn");
+        $("scan-hint").textContent = "Nie widzę kodu — przybliż telefon, włącz Przybliż ×2 albo Zrób zdjęcie kodu";
+      }
     }
-    setTimeout(loop, 120);
+    setTimeout(loop, 60);
   }
+  async function applyZoom(){
+    const v = $("scan-video");
+    if (hwZoom && scanTrack) {
+      const z = Math.min(hwZoom.max, Math.max(hwZoom.min, scanZoom));
+      try { await scanTrack.applyConstraints({ advanced: [{ zoom: z }] }); v.style.transform = ""; } catch { v.style.transform = `scale(${scanZoom})`; }
+    } else v.style.transform = scanZoom > 1 ? `scale(${scanZoom})` : "";
+    $("scan-zoom").textContent = scanZoom >= 3 ? "Oddal ×1" : `Przybliż ×${scanZoom + 1}`;
+  }
+  $("scan-zoom").onclick = () => { scanZoom = scanZoom >= 3 ? 1 : scanZoom + 1; applyZoom(); };
+  // tap to focus
+  $("scanner").addEventListener("click", async e => {
+    if (!scanTrack || e.target.closest(".scanbar")) return;
+    const caps = scanTrack.getCapabilities ? scanTrack.getCapabilities() : {};
+    const rect = $("scan-video").getBoundingClientRect();
+    const pt = { x: (e.clientX - rect.left) / rect.width, y: (e.clientY - rect.top) / rect.height };
+    try {
+      const adv = {};
+      if (caps.focusMode && caps.focusMode.includes("single-shot")) adv.focusMode = "single-shot";
+      if ("pointsOfInterest" in (scanTrack.getSettings ? scanTrack.getSettings() : {}) || caps.pointsOfInterest) adv.pointsOfInterest = [pt];
+      if (Object.keys(adv).length) await scanTrack.applyConstraints({ advanced: [adv] });
+      if (caps.focusMode && caps.focusMode.includes("continuous")) setTimeout(() => scanTrack && scanTrack.applyConstraints({ advanced: [{ focusMode: "continuous" }] }).catch(() => {}), 1500);
+    } catch {}
+  });
+  // take a full-resolution photo with the phone camera (best for tiny QR codes)
+  $("scan-photo-btn").onclick = () => { const cb = scanCb, el = scanMsgEl; stopScan(); imgCb = cb; imgMsgEl = el; $("scan-shot").click(); };
   async function startScan(cb, msgEl){
     scanCb = cb; scanMsgEl = msgEl; if (msgEl) msgEl.textContent = "";
     if (!detector) return;
     if (!navigator.mediaDevices?.getUserMedia) { pickImage(cb, msgEl); return; }
     try {
-      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" }, width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+      stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" }, width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
     } catch (e) {
-      if (msgEl) msgEl.textContent = e && e.name === "NotAllowedError" ? "Brak dostępu do aparatu. Wybierz zdjęcie z kodem." : "Nie udało się włączyć aparatu. Wybierz zdjęcie z kodem.";
-      pickImage(cb, msgEl); return;
+      try { stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: "environment" } }, audio: false }); }
+      catch (e2) {
+        if (msgEl) msgEl.textContent = e2 && e2.name === "NotAllowedError" ? "Brak dostępu do aparatu. Wybierz zdjęcie z kodem." : "Nie udało się włączyć aparatu. Wybierz zdjęcie z kodem.";
+        pickImage(cb, msgEl); return;
+      }
     }
     const v = $("scan-video"); v.srcObject = stream; $("scanner").hidden = false; scanning = true;
+    $("scan-hint").classList.remove("warn"); $("scan-hint").textContent = "Nakieruj kod w ramkę · stuknij ekran, żeby wyostrzyć";
     try { await v.play(); } catch {}
-    const track = stream.getVideoTracks()[0];
+    if (!stream || !scanning) return; // closed while the camera was starting
+    scanTrack = stream.getVideoTracks()[0];
+    const caps = scanTrack.getCapabilities ? scanTrack.getCapabilities() : {};
+    hwZoom = caps.zoom && caps.zoom.max > 1 ? { min: caps.zoom.min || 1, max: caps.zoom.max } : null;
+    scanZoom = 1; applyZoom();
+    if (caps.focusMode && caps.focusMode.includes("continuous")) scanTrack.applyConstraints({ advanced: [{ focusMode: "continuous" }] }).catch(() => {});
     let torch = false;
-    $("scan-torch").hidden = !(track.getCapabilities && track.getCapabilities().torch);
-    $("scan-torch").onclick = () => { torch = !torch; track.applyConstraints({ advanced: [{ torch }] }).catch(() => {}); };
+    $("scan-torch").hidden = !caps.torch; $("scan-torch").setAttribute("aria-pressed", "false");
+    $("scan-torch").onclick = () => { torch = !torch; $("scan-torch").setAttribute("aria-pressed", torch); scanTrack && scanTrack.applyConstraints({ advanced: [{ torch }] }).catch(() => {}); };
+    scanTick = 0; scanStart = Date.now();
     loop();
   }
   function pickImage(cb, msgEl){ imgCb = cb; imgMsgEl = msgEl; $("gallery-in").click(); }
   async function readImage(file){
     const bmp = await createImageBitmap(file);
     let r = await detector.detect(bmp);
-    if (!r.length) { // retry on a downscaled copy (large photos)
-      const k = 1600 / Math.max(bmp.width, bmp.height);
-      if (k < 1) { const c = document.createElement("canvas"); c.width = Math.round(bmp.width * k); c.height = Math.round(bmp.height * k); c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height); r = await detector.detect(c); }
+    if (r.length) return r;
+    // retry: downscaled copies and centre crops (tiny codes in big photos)
+    const W = bmp.width, H = bmp.height, tries = [];
+    for (const size of [2400, 1600, 1000]) tries.push({ sx: 0, sy: 0, sw: W, sh: H, size });
+    for (const f of [0.6, 0.4, 0.25]) tries.push({ sx: W * (1 - f) / 2, sy: H * (1 - f) / 2, sw: W * f, sh: H * f, size: 1400 });
+    const c = document.createElement("canvas"), g = c.getContext("2d");
+    for (const t of tries) {
+      const k = Math.min(2, t.size / Math.max(t.sw, t.sh));
+      c.width = Math.round(t.sw * k); c.height = Math.round(t.sh * k);
+      g.drawImage(bmp, t.sx, t.sy, t.sw, t.sh, 0, 0, c.width, c.height);
+      try { r = await detector.detect(c); } catch { r = []; }
+      if (r.length) return r;
     }
-    return r;
+    return [];
   }
+  $("scan-shot").onchange = e => $("gallery-in").onchange(e);
   $("gallery-in").onchange = async e => {
     const f = e.target.files[0]; e.target.value = ""; if (!f || !detector || !imgCb) return;
     try {
