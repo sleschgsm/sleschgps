@@ -370,6 +370,15 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
     </div>
   </section>
   <section class="panel">
+    <h2>Naklejka z kodem QR</h2>
+    <p class="hint">Naklejkę przyklejasz do nawigacji po przyjęciu, żeby urządzenia się nie pomyliły. Ustaw rozmiar rolki w drukarce i rodzaj pliku.</p>
+    <div class="grid">
+      <label>Rozmiar naklejki<select id="l-size"><option value="40x30">40 × 30 mm (rolka Phomemo z zestawu)</option><option value="50x30">50 × 30 mm</option></select></label>
+      <label>Plik naklejki<select id="l-fmt"><option value="png">Obrazek PNG (do aplikacji Phomemo)</option><option value="pdf">PDF (zwykła drukarka)</option></select></label>
+    </div>
+    <span class="msg" id="l-msg"></span>
+  </section>
+  <section class="panel">
     <h2>Cennik usług</h2>
     <p class="hint">Usługi z cennika pojawią się nad formularzem nowej naprawy. Jedno stuknięcie wpisze urządzenie, zakres naprawy i kwotę.</p>
     <div class="plist" id="c-list"></div>
@@ -533,7 +542,8 @@ dd.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
         <button class="btn" id="c-intake">Potwierdzenie przyjęcia (PDF)</button>
         <button class="btn primary" id="c-pdf">Karta gwarancyjna (PDF A6)</button>
         <button class="btn" id="c-card">Karta (PNG)</button>
-        <button class="btn" id="c-label">Naklejka z QR (PDF 50×30 mm)</button>
+        <button class="btn" id="c-label">Naklejka z QR (PDF)</button>
+        <button class="btn" id="c-label-png">Naklejka z QR (PNG)</button>
         <button class="btn" id="c-qrpng">Sam QR</button>
       </div>
     </div>
@@ -2620,7 +2630,8 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     $("c-copy").onclick = () => { const p = navigator.clipboard?.writeText(r.telefon); if (p) p.then(() => setMsg("Skopiowano numer."), () => setMsg("Zaznacz numer i skopiuj ręcznie.")); else setMsg("Zaznacz numer i skopiuj ręcznie."); };
     if ($("c-hist")) $("c-hist").onclick = () => { $("q").value = r.telefon; filterSt = "all"; closeCard(); show("list"); renderList(); };
     const canSave = !!(store && store.canSave);
-    ["c-intake", "c-pdf", "c-card", "c-label", "c-qrpng"].forEach(id => $(id).hidden = !canSave);
+    ["c-intake", "c-pdf", "c-card", "c-label", "c-label-png", "c-qrpng"].forEach(id => $(id).hidden = !canSave);
+    $("c-label").textContent = `Naklejka z QR (PDF ${labelMM().w}×${labelMM().h} mm)`; $("c-label-png").textContent = `Naklejka z QR (PNG ${labelMM().w}×${labelMM().h} mm)`;
     if (!same) { disarm(); setMsg(""); $("c-new").hidden = true; }
     renderPhotos(r.kod);
     $("sheet").hidden = false;
@@ -2688,7 +2699,10 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   $("c-trk-photo").onclick = () => pickImage(applyTracking, $("c-trk-msg"));
 
   function closeCard(){ $("sheet").hidden = true; current = null; $("c-new").hidden = true; }
-  $("c-new-label").onclick = async () => { await $("c-label").onclick(); $("c-new-msg").textContent = "Naklejka zapisana jako PDF — otwórz ją i wydrukuj w rozmiarze 100%."; };
+  $("c-new-label").onclick = async () => {
+    if (labelFmt === "png") { await $("c-label-png").onclick(); $("c-new-msg").textContent = "Naklejka zapisana jako obrazek. W aplikacji Phomemo utwórz etykietę " + labelSize.replace("x", "×") + " mm, wstaw obrazek i rozciągnij na całą etykietę."; }
+    else { await $("c-label").onclick(); $("c-new-msg").textContent = "Naklejka zapisana jako PDF — otwórz ją i wydrukuj w rozmiarze 100%."; }
+  };
   $("c-new-intake").onclick = async () => { await $("c-intake").onclick(); $("c-new-msg").textContent = "Potwierdzenie zapisane jako PDF. Możesz je też wysłać klientowi SMS-em poniżej."; };
   $("c-new-later").onclick = () => { $("c-new").hidden = true; };
   $("c-close").onclick = closeCard;
@@ -2882,24 +2896,45 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     x.fillStyle = "#5a6878"; x.font = "400 25px 'IBM Plex Sans', sans-serif"; x.fillText("O zakończeniu naprawy poinformujemy SMS-em.", M, H - 36);
     return c;
   }
-  // 50 × 30 mm sticker
+  // QR sticker, 40 × 30 or 50 × 30 mm at 300 dpi
+  let labelSize = "40x30", labelFmt = "png";
+  const labelMM = () => labelSize === "50x30" ? { w: 50, h: 30 } : { w: 40, h: 30 };
   async function drawLabel(r){
     try { await document.fonts.ready; } catch {}
-    const W = 591, H = 354, c = document.createElement("canvas"); c.width = W; c.height = H;
+    const mm = labelMM(), W = Math.round(mm.w / 25.4 * 300), H = Math.round(mm.h / 25.4 * 300);
+    const c = document.createElement("canvas"); c.width = W; c.height = H;
     const x = c.getContext("2d");
     x.fillStyle = "#fff"; x.fillRect(0, 0, W, H);
-    drawQR(x, makeQR(r.kod), 6, 12, 330);
-    const tx = 336, mw = W - tx - 12;
+    const narrow = mm.w < 50;
+    const qs = narrow ? 300 : 330, qy = Math.round((H - qs) / 2);
+    drawQR(x, makeQR(r.kod), 0, qy, qs);
+    const tx = qs + 4, mw = W - tx - 10;
     const fit = (t, font) => { x.font = font; let s = String(t || ""); while (x.measureText(s).width > mw && s.length > 2) s = s.slice(0, -2) + "…"; return s; };
     x.fillStyle = "#000";
-    x.fillText(fit("SleschGPS", "700 30px 'Barlow Semi Condensed', 'Arial Narrow', sans-serif"), tx, 50);
-    x.fillText(fit(r.kod, "700 34px 'IBM Plex Mono', monospace"), tx, 108);
-    x.fillText(fit(r.klient, "600 30px 'IBM Plex Sans', sans-serif"), tx, 170);
-    x.fillText(fit(r.urzadzenie || "", "400 27px 'IBM Plex Sans', sans-serif"), tx, 220);
-    x.fillText(fit(r.utworzono ? stampShort(r.utworzono).slice(0, 5) + "." + new Date(r.utworzono).getFullYear() : "", "400 26px 'IBM Plex Sans', sans-serif"), tx, 268);
-    x.fillText(fit(accText(r) === "—" ? "" : accText(r), "400 22px 'IBM Plex Sans', sans-serif"), tx, 312);
+    const date = r.utworzono ? stampShort(r.utworzono).slice(0, 5) + "." + new Date(r.utworzono).getFullYear() : "";
+    if (narrow) {
+      // narrow sticker: code on two lines, bold and big enough for a 203 dpi thermal printer
+      x.fillText(fit("SleschGPS", "700 26px 'Barlow Semi Condensed', 'Arial Narrow', sans-serif"), tx, 44);
+      const [p1, p2] = [String(r.kod).slice(0, 3), String(r.kod).slice(3)];
+      x.fillText(fit(p1, "700 30px 'IBM Plex Mono', monospace"), tx, 96);
+      x.fillText(fit(p2, "700 32px 'IBM Plex Mono', monospace"), tx, 134);
+      x.fillText(fit((r.klient || "").split(/\s+/).slice(-1)[0] || r.klient, "700 27px 'IBM Plex Sans', sans-serif"), tx, 192);
+      x.fillText(fit(r.urzadzenie || "", "500 23px 'IBM Plex Sans', sans-serif"), tx, 240);
+      x.fillText(fit(date, "500 23px 'IBM Plex Sans', sans-serif"), tx, 284);
+      x.fillText(fit(r.zgloszenie || "", "700 23px 'IBM Plex Mono', monospace"), tx, 326);
+    } else {
+      x.fillText(fit("SleschGPS", "700 30px 'Barlow Semi Condensed', 'Arial Narrow', sans-serif"), tx, 50);
+      x.fillText(fit(r.kod, "700 34px 'IBM Plex Mono', monospace"), tx, 108);
+      x.fillText(fit(r.klient, "600 30px 'IBM Plex Sans', sans-serif"), tx, 170);
+      x.fillText(fit(r.urzadzenie || "", "400 27px 'IBM Plex Sans', sans-serif"), tx, 220);
+      x.fillText(fit(date, "400 26px 'IBM Plex Sans', sans-serif"), tx, 268);
+      x.fillText(fit(r.zgloszenie ? r.zgloszenie + " · " + (accText(r) === "—" ? "" : accText(r)) : (accText(r) === "—" ? "" : accText(r)), "400 22px 'IBM Plex Sans', sans-serif"), tx, 312);
+    }
     return c;
   }
+  // settings
+  $("l-size").onchange = async () => { labelSize = $("l-size").value; try { await store.setSetting("labelSize", labelSize); $("l-msg").textContent = "Zapisano rozmiar naklejki."; } catch {} if (current) openCard(current); };
+  $("l-fmt").onchange = async () => { labelFmt = $("l-fmt").value; try { await store.setSetting("labelFmt", labelFmt); $("l-msg").textContent = "Zapisano rodzaj pliku."; } catch {} };
   // PDF with one JPEG image. place: {pw, ph, x, y, w, h, cut} in mm
   function makePDF(jpeg, pxW, pxH, place){
     const P = place || { pw: 210, ph: 297, x: 10, y: 10, w: 105, h: 148, cut: true };
@@ -2935,8 +2970,12 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
   };
   $("c-label").onclick = async () => {
     const r = current; if (!r) return;
-    const c = await drawLabel(r);
-    saveBlob(makePDF(await toJpeg(c), c.width, c.height, { pw: 50, ph: 30, x: 0, y: 0, w: 50, h: 30, cut: false }), `Naklejka-${r.kod}.pdf`);
+    const c = await drawLabel(r), mm = labelMM();
+    saveBlob(makePDF(await toJpeg(c), c.width, c.height, { pw: mm.w, ph: mm.h, x: 0, y: 0, w: mm.w, h: mm.h, cut: false }), `Naklejka-${r.kod}.pdf`);
+  };
+  $("c-label-png").onclick = async () => {
+    const r = current; if (!r) return;
+    saveBlob(await canvasBlob(await drawLabel(r), "image/png"), `Naklejka-${r.kod}.png`);
   };
   $("c-card").onclick = async () => {
     const r = current; if (!r) return;
@@ -3185,6 +3224,8 @@ const MODE = "local"; // "claude" = baza na koncie Claude, "local" = dane w tej 
     for (const m of MSGS) { try { const t = await store.getSetting(m[2]); if (t) tpls[m[0]] = t; } catch {} }
     loadTplEditor();
     try { cennik = JSON.parse((await store.getSetting("cennik")) || "[]"); } catch { cennik = []; }
+    try { labelSize = (await store.getSetting("labelSize")) || "40x30"; labelFmt = (await store.getSetting("labelFmt")) || "png"; } catch {}
+    $("l-size").value = labelSize; $("l-fmt").value = labelFmt;
     renderCennik();
     if (MODE !== "local") lm.textContent = "Wczytuję naprawy…";
     try { pinHash = (await store.getSetting("pin")) || null; } catch {}
